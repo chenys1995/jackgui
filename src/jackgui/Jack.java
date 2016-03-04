@@ -1,5 +1,5 @@
 package jackgui;
-import jackgui.JackGUI;
+import java.util.Random;
 class District{
 	//class member
 	public char id;
@@ -7,7 +7,9 @@ class District{
     private boolean dead = false;
 	//class constructer
 	public District(char c){
-		id=c;
+		this.id=c;
+		Random rand = new Random();
+		this.deadroad = rand.nextInt(4) * 90;
 	}
 	// set the direction of card; degree = 0~270
     public void set_direction(int deg){
@@ -37,11 +39,12 @@ class Desktop{
 	
 }
 public class Jack {
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		JackGUI gui = new JackGUI();
-		gui.onCreate();
+		//JackGUI gui = new JackGUI();
+		District d = new District('d');
+		d.set_direction(90);
+		//System.out.printf("%d\n", d.get_deg());
 	}
 
 }
