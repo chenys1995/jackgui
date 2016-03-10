@@ -66,7 +66,21 @@ class Holmes_team{
 	
 }
 class Desktop{
+	public Desktop();
+	public void print_map();
+	public void print_status();
+	public void print_act(Desktop& desk, boolean act_lock, boolean used);//not sure pointer or reference stuff
+	public char get_jack();
+	public void suspect_check(int round);
+	public boolean inOver();
 	
+	private District[] people = new District[9];
+	private char jack_id;
+	private Holmes_team hol_tm;
+    private stack<char> Card;//not sure
+    private int score;
+    private pair<string,string> ActCard[4];//need to construct a class later
+	private boolean gameover;
 	
 	
 }
