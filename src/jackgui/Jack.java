@@ -1,5 +1,6 @@
 package jackgui;
 import java.util.Random;
+import java.util.*;
 class District{
 	//class member
 	public char id;
@@ -66,20 +67,39 @@ class Holmes_team{
 	
 }
 class Desktop{
-	public Desktop();
-	public void print_map();
-	public void print_status();
-	public void print_act(Desktop& desk, boolean act_lock, boolean used);//not sure pointer or reference stuff
-	public char get_jack();
-	public void suspect_check(int round);
-	public boolean inOver();
+	class pair<T1,T2>{
+		public T1 first;
+		public T2 second;
+	}
+	public Desktop(){
+		
+	}
+	public void print_map(){
+		
+	}
+	public void print_status(){
+		
+	}
+	public void print_act(Desktop desk, boolean act_lock, boolean used)//not sure pointer or reference stuff
+	{
+		
+	}
+	public char get_jack(){
+		return 'c';
+	}
+	public void suspect_check(int round){
+		
+	}
+	public boolean inOver(){
+		return true;
+	}
 	
 	private District[] people = new District[9];
 	private char jack_id;
 	private Holmes_team hol_tm;
-    private stack<char> Card;//not sure
+    private Stack<char[]> Card;//not sure
     private int score;
-    private pair<string,string> ActCard[4];//need to construct a class later
+    private pair<String,String> ActCard[];//need to construct a class later
 	private boolean gameover;
 	
 	
