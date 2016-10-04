@@ -2,13 +2,15 @@ package jackgui;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
-
 import java.util.ArrayList;
 import java.util.List;;
 public class JackGUI implements ActionListener{
 	class myButton extends JButton{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1838929864725400980L;
 		public myButton(ImageIcon imageIcon) {
 			// TODO Auto-generated constructor stub
 			super(imageIcon);
@@ -18,7 +20,6 @@ public class JackGUI implements ActionListener{
 			gridy=y;
 		}
 		boolean IsPeople = false, IsDead = false;
-		int angle ;
 		int gridx,gridy;
 	}
 	private static JFrame mainwindow = new JFrame();
@@ -98,9 +99,9 @@ public class JackGUI implements ActionListener{
 	            cons.fill = GridBagConstraints.BOTH;
 	            cons.anchor = GridBagConstraints.CENTER;
 				if(i>0 && i<4 && j>0 && j<4){
-					people[c].angle = ((int)Math.random()) % 90 ;
-					String path = "res/"+((Integer) order.toArray()[c]+1)+"_"+people[c].angle+".png";
+					String path = "res/"+((Integer) order.toArray()[c]+1)+"_90.png";
 					people[c] = new myButton(new ImageIcon(path));
+					people[c].addActionListener(this);
 					people[c].IsPeople = true;
 					people[c].setxy(j,i);
 					mainwindow.add(people[c],cons);
@@ -121,7 +122,7 @@ public class JackGUI implements ActionListener{
 					dog.addActionListener(this);
 					mainwindow.add(dog,cons);
 				}
-				else if(i>5 && j<4){
+				else if(i>4 && j<4){
 					actions[act] = new myButton(new ImageIcon("res/act"+act+".png"));
 					actions[act].setxy(j,i);
 					mainwindow.add(actions[act],cons);
