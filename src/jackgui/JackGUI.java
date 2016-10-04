@@ -17,7 +17,8 @@ public class JackGUI implements ActionListener{
 			gridx=x;
 			gridy=y;
 		}
-		
+		boolean IsPeople = false, IsDead = false;
+		int angle ;
 		int gridx,gridy;
 	}
 	private static JFrame mainwindow = new JFrame();
@@ -29,29 +30,29 @@ public class JackGUI implements ActionListener{
 	myButton dog = new myButton(new ImageIcon("res/dog.png"));
 	GridBagConstraints cons = new GridBagConstraints();
 	boolean[] Duplicate = new boolean[3];//[Holmes, Watson, Dog]
+	boolean rotate,exchange;
 	public JackGUI(){
 		
 	}
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == Holmes || e.getSource() == Watson || e.getSource() == dog){
-			int gridx = ((myButton)e.getSource()).gridx,gridy = ((myButton)e.getSource()).gridy;
 			this.movepos((myButton)e.getSource());
 			cons.gridx = ((myButton)e.getSource()).gridx;
 			cons.gridy = ((myButton)e.getSource()).gridy;
-			if((myButton)e.getSource() == Holmes){
-					if(dog.gridx == cons.gridx && dog.gridy == cons.gridy){
-						Duplicate[0]= true;
-						Duplicate[2]= true;
-					}
-					else if(Watson.gridx == cons.gridx && Watson.gridy == cons.gridy){
-						Duplicate[0]= true;
-						Duplicate[1]= true;
-					}
-			}
 			mainwindow.remove((myButton)e.getSource());
 			mainwindow.add((myButton)e.getSource(),cons);
 			mainwindow.revalidate();
 			mainwindow.repaint();
+			return;
+		}
+		for(int i=0;i<9;i++){
+			if(e.getSource() == people[i]){
+				if(rotate){
+				}
+				else if(exchange){
+					
+				}
+			}
 		}
     }
 	public void movepos(myButton b){
@@ -85,8 +86,7 @@ public class JackGUI implements ActionListener{
 			order.add(i);
 		}
 		java.util.Collections.shuffle(order);
-		
-		int c=0,act=0,n=0;
+		int c=0,act=0;
 		for(int i =0; i<7;i++){	
 			for(int j=0;j<5;j++){
 	            cons.gridx = j;
@@ -98,8 +98,10 @@ public class JackGUI implements ActionListener{
 	            cons.fill = GridBagConstraints.BOTH;
 	            cons.anchor = GridBagConstraints.CENTER;
 				if(i>0 && i<4 && j>0 && j<4){
-					String path = "res/"+((Integer) order.toArray()[c]+1)+".png";
+					people[c].angle = ((int)Math.random()) % 90 ;
+					String path = "res/"+((Integer) order.toArray()[c]+1)+"_"+people[c].angle+".png";
 					people[c] = new myButton(new ImageIcon(path));
+					people[c].IsPeople = true;
 					people[c].setxy(j,i);
 					mainwindow.add(people[c],cons);
 					c++;
@@ -129,5 +131,11 @@ public class JackGUI implements ActionListener{
 		}
 		
 		mainwindow.setVisible(true);
+	}
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		JackGUI gui = new JackGUI();
+		gui.onCreate();
+		//System.out.printf("%d\n", d.get_deg());
 	}
 }
