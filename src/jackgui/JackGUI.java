@@ -40,26 +40,52 @@ public class JackGUI implements ActionListener{
 	myButton ok = new myButton(new ImageIcon("res/ok.png"));
 	GridBagConstraints cons = new GridBagConstraints();
 	boolean[] Duplicate = new boolean[3];//[Holmes, Watson, Dog]
-	int rotate,exchange,Reserve_Angle;
+	int rotate,exchange,steps;
 	public JackGUI(){
 
 	}
 	public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource() == Holmes || e.getSource() == Watson || e.getSource() == dog){
-			this.movepos((myButton)e.getSource());
-			cons.gridx = ((myButton)e.getSource()).gridx;
-			cons.gridy = ((myButton)e.getSource()).gridy;
-			mainwindow.remove((myButton)e.getSource());
-			mainwindow.add((myButton)e.getSource(),cons);
-			mainwindow.revalidate();
-			mainwindow.repaint();
+			
+			if(steps >0){
+				this.movepos((myButton)e.getSource());
+				cons.gridx = ((myButton)e.getSource()).gridx;
+				cons.gridy = ((myButton)e.getSource()).gridy;
+				mainwindow.remove((myButton)e.getSource());
+				mainwindow.add((myButton)e.getSource(),cons);
+				mainwindow.revalidate();
+				mainwindow.repaint();
+			}
+			else {
+				steps = -1;
+				return;
+			}
+			steps--;
+		}
+		else if(e.getSource() == actions[0]){
+			steps = 2;
+			Watson.setEnabled(true);
 		}
 		else if(e.getSource() == actions[1] || e.getSource() == actions[2]){//2 rotation 
 			for(int i=0;i<9;i++)people[i].setEnabled(true);
 			ok.setEnabled(true);
 			rotate = 1;
 			exchange = -1;
+		}
+		else if(e.getSource() == actions[3]){
+			steps = 2;
+			Holmes.setEnabled(true);
+		}
+		else if(e.getSource() == actions[4]){
+			steps = 2;
+			dog.setEnabled(true);
+		}
+		else if(e.getSource() == actions[5]){
+			steps = 1;
+			dog.setEnabled(true);
+			Watson.setEnabled(true);
+			Holmes.setEnabled(true);
 		}
 		else if(e.getSource() == actions[6]){//exchange 2 people;
 			for(int i=0;i<9;i++)people[i].setEnabled(true);
@@ -123,24 +149,36 @@ public class JackGUI implements ActionListener{
     }
 	public void movepos(myButton b){
 		//1st row :right
-		if(b.gridy == 0 && b.gridx >= 0 && b.gridx < 4) {
-			b.gridx = b.gridx + 1;
-			//b.gridy=b.gridy;
+		if(b.gridy == 0 && b.gridx > 0 && b.gridx < 4) {
+			if(b.gridx != 3)  b.gridx = b.gridx + 1;
+			else {
+				 b.gridx = b.gridx + 1;
+				 b.gridy = b.gridy + 1;
+			}
 		}
 		//4th row :left
 		else if(b.gridy == 4 && b.gridx > 0 && b.gridx <= 4) {
-			b.gridx=b.gridx - 1;
-			//b.gridy=b.gridy - 1;
+			if(b.gridx !=1 )b.gridx=b.gridx - 1;
+			else {
+				b.gridx = b.gridx - 1;
+				b.gridy = b.gridy - 1;
+			}
 		}
 		//1st column:up
 		else if(b.gridx == 0 && b.gridy <= 4 && b.gridy > 0){
-			//b.gridx=b.gridx;
-			b.gridy=b.gridy - 1;
+			if(b.gridy !=  1)b.gridy=b.gridy - 1;
+			else {
+				b.gridx=b.gridx + 1;
+				b.gridy=b.gridy - 1;
+			}
 		}
 		//4th column:down
 		else if(b.gridx == 4 && b.gridy < 4 && b.gridy >= 0){
-			//b.gridx=b.gridx;
-			b.gridy=b.gridy + 1;
+			if(b.gridy != 3)b.gridy=b.gridy + 1;
+			else {
+				b.gridx=b.gridx - 1;
+				b.gridy=b.gridy + 1;
+			}
 		}
 	}
 	public void onCreate() {
