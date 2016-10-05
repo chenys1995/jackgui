@@ -1,4 +1,5 @@
 package jackgui;
+import java.util.Random;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,23 +20,32 @@ public class JackGUI implements ActionListener{
 			gridx=x;
 			gridy=y;
 		}
+		public void setChar(int c){
+			if(c != 0){
+				character = c;
+			}
+		}
+		public void setAngle(int angle){
+			this.angle = angle;
+		}
 		boolean IsPeople = false, IsDead = false;
-		int gridx,gridy;
+		int gridx,gridy,character,angle=0;
 	}
 	private static JFrame mainwindow = new JFrame();
 	myButton[] people = new myButton[9];
 	myButton[] actions = new myButton[8];
-	myButton[] empty = new myButton[13];
 	myButton Holmes = new myButton(new ImageIcon("res/Holmes.png"));
 	myButton Watson = new myButton(new ImageIcon("res/Watson.png"));
 	myButton dog = new myButton(new ImageIcon("res/dog.png"));
+	myButton ok = new myButton(new ImageIcon("res/ok.png"));
 	GridBagConstraints cons = new GridBagConstraints();
 	boolean[] Duplicate = new boolean[3];//[Holmes, Watson, Dog]
-	boolean rotate,exchange;
+	int rotate,exchange,Reserve_Angle;
 	public JackGUI(){
-		
+
 	}
 	public void actionPerformed(ActionEvent e) {
+		
 		if(e.getSource() == Holmes || e.getSource() == Watson || e.getSource() == dog){
 			this.movepos((myButton)e.getSource());
 			cons.gridx = ((myButton)e.getSource()).gridx;
@@ -44,14 +54,69 @@ public class JackGUI implements ActionListener{
 			mainwindow.add((myButton)e.getSource(),cons);
 			mainwindow.revalidate();
 			mainwindow.repaint();
-			return;
+		}
+		else if(e.getSource() == actions[1] || e.getSource() == actions[2]){//2 rotation 
+			for(int i=0;i<9;i++)people[i].setEnabled(true);
+			ok.setEnabled(true);
+			rotate = 1;
+			exchange = -1;
+		}
+		else if(e.getSource() == actions[6]){//exchange 2 people;
+			for(int i=0;i<9;i++)people[i].setEnabled(true);
+			ok.setEnabled(true);
+			exchange = 2;
+			rotate = -1;
+		}
+		else if(e.getSource() == ok){
+			if(exchange == -1){
+				for(int i=0;i<9;i++){
+					if(people[i].isEnabled())people[i].setEnabled(false);
+					rotate = 0;
+				}
+			}
+			else if(rotate == -1){
+				int x = -1,y = -1;
+				for(int i=0;i<9;i++){
+					if(x == -1 && !people[i].isEnabled()){
+						x= i;
+						System.out.printf("x: %d\n",x);
+					}
+					else if(x != -1 && !people[i].isEnabled()){
+						y=i;
+						System.out.printf("y: %d\n",y);
+					}
+				}
+				cons.gridx=people[x].gridx;
+				cons.gridy=people[x].gridy;
+				mainwindow.add(people[y], cons);
+				cons.gridx=people[y].gridx;
+				cons.gridy=people[y].gridy;
+				mainwindow.add(people[x], cons);
+				mainwindow.revalidate();
+				mainwindow.repaint();	
+				System.out.println("Swap success\n");
+				rotate = 0;
+			}
+			for(int i=0;i<9;i++){
+				people[i].setEnabled(false);
+			}
 		}
 		for(int i=0;i<9;i++){
-			if(e.getSource() == people[i]){
-				if(rotate){
+			if(e.getSource() == people[i] && people[i].isEnabled()){
+				if(rotate > 0){
+					for(int j=0;j<9;j++)
+						if(j !=i)people[j].setEnabled(false);
+					people[i].setAngle((people[i].angle +90) % 360);
+					String Path = "res/"+people[i].character,Selector="_"+people[i].angle+".png";
+					people[i].setIcon(new ImageIcon(Path+Selector));
+					people[i].setDisabledIcon(new ImageIcon(Path+Selector));
+					mainwindow.revalidate();
+					mainwindow.repaint();
 				}
-				else if(exchange){
-					
+				else if(exchange > 0){
+					people[i].setEnabled(false);
+					mainwindow.remove(people[i]);
+					exchange--;
 				}
 			}
 		}
@@ -82,10 +147,12 @@ public class JackGUI implements ActionListener{
 		mainwindow.setSize(800, 800);
 		mainwindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainwindow.getContentPane().setLayout(new GridBagLayout());
-		List<Integer> order=new ArrayList<Integer>();
-		for(int i =0; i<9;i++){	
+		Random rand = new Random();
+		List<Integer> order=new ArrayList<Integer>(),angle=new ArrayList<Integer>();
+		for(int i = 0; i<9;i++){	
 			order.add(i);
-		}
+		    angle.add(rand.nextInt(4)*90);
+		}	
 		java.util.Collections.shuffle(order);
 		int c=0,act=0;
 		for(int i =0; i<7;i++){	
@@ -99,8 +166,12 @@ public class JackGUI implements ActionListener{
 	            cons.fill = GridBagConstraints.BOTH;
 	            cons.anchor = GridBagConstraints.CENTER;
 				if(i>0 && i<4 && j>0 && j<4){
-					String path = "res/"+((Integer) order.toArray()[c]+1)+"_90.png";
-					people[c] = new myButton(new ImageIcon(path));
+					String path = "res/"+(((Integer)order.toArray()[c])+1),Selector="_"+((Integer)angle.toArray()[c])+".png";
+					//System.out.printf("selector: %s\n", path+Selector);
+					people[c] = new myButton(new ImageIcon(path+Selector));
+					people[c].setChar((((Integer)order.toArray()[c])+1));
+					people[c].setAngle(((Integer)angle.toArray()[c]));
+					people[c].setDisabledIcon(new ImageIcon(path+Selector));
 					people[c].addActionListener(this);
 					people[c].IsPeople = true;
 					people[c].setxy(j,i);
@@ -126,11 +197,21 @@ public class JackGUI implements ActionListener{
 					actions[act] = new myButton(new ImageIcon("res/act"+act+".png"));
 					actions[act].setxy(j,i);
 					mainwindow.add(actions[act],cons);
-					act++;
+					actions[act].addActionListener(this);
+					act++;	
+				}
+				else if(i==5 && j==4){
+					ok.setxy(j,i);
+					ok.addActionListener(this);
+					mainwindow.add(ok,cons);
 				}
 			}
 		}
-		
+		for(int i=0;i<9;i++)people[i].setEnabled(false);
+		Holmes.setEnabled(false);
+		Watson.setEnabled(false);
+		dog.setEnabled(false);
+		ok.setEnabled(false);
 		mainwindow.setVisible(true);
 	}
 	public static void main(String[] args) {
