@@ -70,7 +70,7 @@ public class JackGUI implements ActionListener{
 		else if(e.getSource() == actions[1] || e.getSource() == actions[2]){//2 rotation 
 			for(int i=0;i<9;i++)people[i].setEnabled(true);
 			ok.setEnabled(true);
-			rotate = 1;
+			rotate = 3;
 			exchange = -1;
 		}
 		else if(e.getSource() == actions[3]){
@@ -100,8 +100,9 @@ public class JackGUI implements ActionListener{
 					rotate = 0;
 				}
 			}
-			else if(rotate == -1){
+		else if(rotate == -1){
 				int x = -1,y = -1;
+				/*
 				for(int i=0;i<9;i++){
 					if(x == -1 && !people[i].isEnabled()){
 						x= i;
@@ -112,6 +113,7 @@ public class JackGUI implements ActionListener{
 						System.out.printf("y: %d\n",y);
 					}
 				}
+				*/
 				cons.gridx=people[x].gridx;
 				cons.gridy=people[x].gridy;
 				mainwindow.add(people[y], cons);
@@ -138,6 +140,7 @@ public class JackGUI implements ActionListener{
 					people[i].setDisabledIcon(new ImageIcon(Path+Selector));
 					mainwindow.revalidate();
 					mainwindow.repaint();
+					rotate--;
 				}
 				else if(exchange > 0){
 					people[i].setEnabled(false);
