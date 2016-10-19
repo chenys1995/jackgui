@@ -102,7 +102,7 @@ public class JackGUI implements ActionListener{
 			}
 		else if(rotate == -1){
 				int x = -1,y = -1;
-				/*
+				
 				for(int i=0;i<9;i++){
 					if(x == -1 && !people[i].isEnabled()){
 						x= i;
@@ -113,7 +113,6 @@ public class JackGUI implements ActionListener{
 						System.out.printf("y: %d\n",y);
 					}
 				}
-				*/
 				cons.gridx=people[x].gridx;
 				cons.gridy=people[x].gridy;
 				mainwindow.add(people[y], cons);
