@@ -46,6 +46,7 @@ public class JackGUI implements ActionListener {
 			}
 			mainwindow.revalidate();
 			mainwindow.repaint();
+			System.out.printf("%d is dead.\n", character);
 		}
 		boolean IsPeople = false, IsDead = false;
 		int gridx, gridy, character, angle = 0;
@@ -59,11 +60,14 @@ public class JackGUI implements ActionListener {
 	myButton dog = new myButton(new ImageIcon("res/dog.png"));
 	myButton ok = new myButton(new ImageIcon("res/ok.png"));
 	myButton displayJack = new myButton(new ImageIcon("res/ok.png"));
-	JTextField round = new JTextField(10);
-	JTextField score = new JTextField(10);  
+	JTextField rounds = new JTextField(10);
+	JTextField scores = new JTextField(10);  
 	JTextField jackid = new JTextField(10);
 	GridBagConstraints cons = new GridBagConstraints();
 	int preClick;
+	int jack;
+	int round, move,score;
+	boolean[] action_used = new boolean[4];
 	boolean[] Duplicate = new boolean[3];// [Holmes, Watson, Dog]
 	int rotate, exchange, steps;
 	
@@ -119,8 +123,14 @@ public class JackGUI implements ActionListener {
 			rotate = -1;
 		} else if(e.getSource() == actions[7]){
 			preClick = 7;
+			ok.setEnabled(true);
 		}
 		else if (e.getSource() == ok) {
+			move++;
+			if(move == 5){
+				move = 1;
+				round_done();
+			}
 			actions[preClick].setEnabled(false);
 			if(steps!=-1){
 				((myButton) e.getSource()).setEnabled(false);
@@ -242,7 +252,10 @@ public class JackGUI implements ActionListener {
 			ok.setEnabled(true);
 			exchange = 2;
 			rotate = -1;
-		} else if (e == ok) {
+		}else if (e == actions[7]){
+			///System.out.printf("7 is pressed\n");
+			//ok.setEnabled(true);
+		}else if (e == ok) {
 			if (exchange == -1) {
 				for (int i = 0; i < 9; i++) {
 					if (people[i].isEnabled())
@@ -346,6 +359,11 @@ public class JackGUI implements ActionListener {
 		mainwindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainwindow.getContentPane().setLayout(new GridBagLayout());
 		Random rand = new Random();
+		jack = rand.nextInt(9)+1;
+		round = 1;
+		move = 1;
+		score = 0;
+		
 		List<Integer> order = new ArrayList<Integer>(), angle = new ArrayList<Integer>();
 		for (int i = 0; i < 9; i++) {
 			order.add(i);
@@ -400,17 +418,19 @@ public class JackGUI implements ActionListener {
 					mainwindow.add(ok, cons);
 				} else if (i == 7 && j == 0) {
 					Font f = new Font("SansSerif", Font.BOLD, 18);
-					round.setEditable(false);
-					round.setFont(f);
-					round.setText("round 1");
-					mainwindow.add(round, cons);
+					rounds.setEditable(false);
+					rounds.setFont(f);
+					String lol = "round "+round;
+					rounds.setText(lol);
+					mainwindow.add(rounds, cons);
 				}
 				else if (i == 7 && j == 1) {
 					Font f = new Font("SansSerif", Font.BOLD, 18);
-					score.setEditable(false);
-					score.setFont(f);
-					score.setText("Jack score 0");
-					mainwindow.add(score, cons);
+					scores.setEditable(false);
+					scores.setFont(f);
+					String lol = "Jack score "+score;
+					scores.setText(lol);
+					mainwindow.add(scores, cons);
 				}
 				else if(i==7 && j==2){
 					Font f = new Font("SansSerif", Font.BOLD, 18);
@@ -438,24 +458,93 @@ public class JackGUI implements ActionListener {
 		dog.setEnabled(false);
 		ok.setEnabled(false);
 		mainwindow.setVisible(true);
+		for(int i=0;i<4;i++){
+			int a=rand.nextInt(2);
+			if(a == 0){
+				action_used[i] = true;
+				actions[i].setEnabled(true);
+				actions[i+4].setEnabled(false);
+			}
+			else{
+				action_used[i] = false;
+				actions[i].setEnabled(false);
+				actions[i+4].setEnabled(true);
+			}
+		}
 	}
 	public void round_done(){
 		
+		if(round%2 == 1){
+			for(int i = 0 ; i <4 ;i++){
+				if(action_used[i]==true){
+					actions[i+4].setEnabled(true);
+				}
+				else {
+					actions[i].setEnabled(true);
+				}
+			}
+		}
+		else{
+			Random rand = new Random();
+			for(int i=0;i<4;i++){
+				int a=rand.nextInt(2);
+				if(a == 0){
+					action_used[i] = true;
+					actions[i].setEnabled(true);
+					actions[i+4].setEnabled(false);
+				}
+				else{
+					action_used[i] = false;
+					actions[i].setEnabled(false);
+					actions[i+4].setEnabled(true);
+				}
+			}
+		}
+		round++;
+		System.out.printf("fuck me\n");
+		boolean seen[]=new boolean[9];
+		for(int i = 0 ; i < 9; i ++)seen[i]= false;
+		if(dog.gridx == 0&& dog.gridy == 1){
+			if(people[0].angle == 90);
+			else if(people[0].angle == 270){
+				seen[0]=true;
+			}
+			else if (people[1].angle == 90){
+				seen[0]= true;
+			}
+			else if(people[1].angle == 270){
+				seen[0]= true;
+				seen[1]= true;
+			}
+			else if(people[2].angle == 90){
+				seen[0]= true;
+				seen[1]= true;
+			}
+			else {
+				seen[0] = true;
+				seen[1] = true;
+				seen[2] = true;
+			}
+		}
+		for(int i = 0 ; i < 9; i++){
+			if(seen[i])people[i].setDead();
+		}
+		System.out.printf("fuck me\n");
 		
 	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		JackGUI gui = new JackGUI();
 		gui.onCreate();
-		int round = 1,score = 0;
+		/*int round = 1,score = 0;
 		int act_num = 1;
-		Random rand = new Random();
-		int jack = rand.nextInt(9)+1;
+		Random rand = new Random();*/
+		//int jack = rand.nextInt(9)+1;
 		gui.jackid.setText("jack is ");
-		//System.out.printf("%d\n", jack);
-		gui.displayJack.setDisabledIcon(new ImageIcon(("res/"+jack+"_0.png")));
-		boolean[] action_used = new boolean[4];
-		for(int i=0;i<4;i++){
+		System.out.printf("%d\n", gui.jack);
+		gui.displayJack.setDisabledIcon(new ImageIcon(("res/"+gui.jack+"_0.png")));
+		
+		/*for(int i=0;i<4;i++){
 			int a=rand.nextInt(2);
 			if(a == 0){
 				action_used[i] = true;
@@ -467,22 +556,12 @@ public class JackGUI implements ActionListener {
 				gui.actions[i].setEnabled(false);
 				gui.actions[i+4].setEnabled(true);
 			}
-		}
-		boolean done = true;
-		for(int i=0;i<8;i++){
-			if(gui.actions[i].isEnabled()){
-				done = false;
-				break;
-			}
-		}
-		System.out.printf("%d\n", gui.people[2].character);
-		gui.people[2].setDead();
-		if(done){
-			round++;
-			gui.round_done();
-			
-		}
+		}*/
 		
+		//System.out.printf("%d\n", gui.people[2].character);
+		gui.people[2].setDead();
+		
+	
 		
 		// System.out.printf("%d\n", d.get_deg());
 	}
