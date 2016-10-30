@@ -209,112 +209,67 @@ public class JackGUI implements ActionListener {
 		}
 	}
 
-	public void AI_select(myButton e) {
-
-		if (e == Holmes || e == Watson || e == dog) {
-			if (steps > 0) {
-				this.movepos((myButton) e);
-				cons.gridx = ((myButton) e).gridx;
-				cons.gridy = ((myButton) e).gridy;
-				mainwindow.remove((myButton) e);
-				mainwindow.add((myButton) e, cons);
-				mainwindow.revalidate();
-				mainwindow.repaint();
-			} else {
-				steps = -1;
-				return;
+	public void Spin(myButton action, myButton p, int angle) {
+		// if(action.isEnabled()) // //comment for test
+		{
+			p.setAngle(angle);
+			String Path, Selector = "_" + p.angle + ".png";
+			if (!p.IsDead)
+				Path = "res/" + p.character;
+			else {
+				if (p.character != 6)
+					Path = "res/triroad";
+				else
+					Path = "res/crossroad";
 			}
-			steps--;
+			p.setIcon(new ImageIcon(Path + Selector));
+			p.setDisabledIcon(new ImageIcon(Path + Selector));
+			mainwindow.revalidate();
+			mainwindow.repaint();
 		}
-		if (e == actions[0]) {
-			steps = 2;
-			Watson.setEnabled(true);
-		} else if (e == actions[1] || e == actions[2]) {// 2 rotation
-			for (int i = 0; i < 9; i++)
-				people[i].setEnabled(true);
-			ok.setEnabled(true);
-			rotate = 3;
-			exchange = -1;
-		} else if (e == actions[3]) {
-			steps = 2;
-			Holmes.setEnabled(true);
-		} else if (e == actions[4]) {
-			steps = 2;
-			dog.setEnabled(true);
-		} else if (e == actions[5]) {
-			steps = 1;
-			dog.setEnabled(true);
-			Watson.setEnabled(true);
-			Holmes.setEnabled(true);
-		} else if (e == actions[6]) {// exchange 2 people;
-			for (int i = 0; i < 9; i++)
-				people[i].setEnabled(true);
-			ok.setEnabled(true);
-			exchange = 2;
-			rotate = -1;
-		}else if (e == actions[7]){
-			///System.out.printf("7 is pressed\n");
-			//ok.setEnabled(true);
-		}else if (e == ok) {
-			if (exchange == -1) {
-				for (int i = 0; i < 9; i++) {
-					if (people[i].isEnabled())
-						people[i].setEnabled(false);
-					rotate = 0;
-				}
-			} else if (rotate == -1) {
-				int x = -1, y = -1;
-				for (int i = 0; i < 9; i++) {
-					if (x == -1 && !people[i].isEnabled()) {
-						x = i;
-						// System.out.printf("x: %d\n",x);
-					} else if (x != -1 && !people[i].isEnabled()) {
-						y = i;
-						// System.out.printf("y: %d\n",y);
-					}
-				}
-
-				cons.gridx = people[x].gridx;
-				cons.gridy = people[x].gridy;
-				mainwindow.add(people[y], cons);
-				cons.gridx = people[y].gridx;
-				cons.gridy = people[y].gridy;
-				mainwindow.add(people[x], cons);
-				mainwindow.revalidate();
-				mainwindow.repaint();
-				// System.out.println("Swap success\n");
-				rotate = 0;
+	}
+	public void Move(myButton action, myButton sel, int _steps) {
+		// if (action.isEnabled()) // comment for extension in the future
+		// Doesn't check steps for action limit.
+		myButton p = 
+				action == actions[0] ? Watson : 
+				action == actions[3] ? Holmes : 
+				action == actions[4] ? dog : 
+				action == actions[5] ? sel : null;
+		if (p == null)
+			return;
+		{
+			for (int i = 0; i < _steps; i++) {
+				this.movepos(p);
 			}
-			for (int i = 0; i < 9; i++) {
-				people[i].setEnabled(false);
-			}
+			cons.gridx = p.gridx;
+			cons.gridy = p.gridy;
+			mainwindow.remove(p);
+			mainwindow.add(p, cons);
+			mainwindow.revalidate();
+			mainwindow.repaint();
 		}
-		for (int i = 0; i < 9; i++) {
-			if (e == people[i] && people[i].isEnabled()) {
-				if (rotate > 0) {
-					for (int j = 0; j < 9; j++)
-						if (j != i)
-							people[j].setEnabled(false);
-					people[i].setAngle((people[i].angle + 90) % 360);
-					String Path = "res/" + people[i].character, Selector = "_" + people[i].angle + ".png";
-					people[i].setIcon(new ImageIcon(Path + Selector));
-					people[i].setDisabledIcon(new ImageIcon(Path + Selector));
-					mainwindow.revalidate();
-					mainwindow.repaint();
-					rotate--;
-				} else if (exchange > 0) {
-					people[i].setEnabled(false);
-					mainwindow.remove(people[i]);
-					exchange--;
-				}
+	}
+	public int priority_of(myButton act){
+		if(act == actions[0] || act == actions[3] || act == actions[4])
+			return 1;
+		else if(act == actions[1] || act == actions[2])
+			return 2;
+		else if(act == actions[5])
+			return 3;
+		else if(act == actions[7])
+			return 3;
+		else return 0;
+	}
+	public void Mini_Max(int dep,int act){
+		for(int i=0;i<act;i++){
+			for(int j=0;j<8;j++){
+				
 			}
 		}
 	}
-	public void AI_exchange(myButton action,myButton people1,myButton people2){
-		AI_select(action);
-		AI_select(people1);
-		AI_select(people2);
-	}
+	
+	
 	public void movepos(myButton b) {
 		// 1st row :right
 		if (b.gridy == 0 && b.gridx > 0 && b.gridx < 4) {
