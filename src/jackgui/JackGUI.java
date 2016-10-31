@@ -433,7 +433,8 @@ public class JackGUI implements ActionListener {
 	}
 
 	public void round_done() {
-
+		System.out.printf("in round_done\n");
+		for(int i = 0; i < 9;i++)System.out.printf("%d 's angle :%d\n",people[i].character,people[i].angle);
 		if (round % 2 == 1) {
 			for (int i = 0; i < 4; i++) {
 				if (action_used[i] == true) {
@@ -960,6 +961,7 @@ public class JackGUI implements ActionListener {
 		boolean jack_seen = false;
 		for (int i = 0; i < 9; i++) {
 			if (jack == people[i].character) {
+				System.out.printf("found jack: \njack is %d\nseen[%d]\n",jack,i);
 				if (seen[i])
 					jack_seen = true;
 				else
