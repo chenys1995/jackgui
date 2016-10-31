@@ -129,7 +129,7 @@ public class JackGUI implements ActionListener {
 				move = 1;
 				round_done();
 			}
-			System.out.printf("num %d\n", preClick);
+			//System.out.printf("num %d\n", preClick);
 			actions[preClick].setEnabled(false);
 			if (steps != -1) {
 				((myButton) e.getSource()).setEnabled(false);
@@ -978,7 +978,7 @@ public class JackGUI implements ActionListener {
 					people[i].setDead();
 			}
 		}
-		//System.out.printf("fuck me\n");
+		System.out.printf("fuck me\n");
 	}
 
 	public static void main(String[] args) {
