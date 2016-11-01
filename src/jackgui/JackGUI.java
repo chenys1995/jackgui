@@ -129,17 +129,12 @@ public class JackGUI implements ActionListener {
 				move = 1;
 				round_done();
 			}
-			//System.out.printf("num %d\n", preClick);
+			System.out.printf("preClick: %d\n", preClick);
 			actions[preClick].setEnabled(false);
-			if (steps != -1) {
-				((myButton) e.getSource()).setEnabled(false);
-				if (Holmes.isEnabled()) {
+			if (preClick == 0 || preClick ==3 || preClick == 4 || preClick == 5) {
 					Holmes.setEnabled(false);
-				} else if (Watson.isEnabled()) {
 					Watson.setEnabled(false);
-				} else {
 					dog.setEnabled(false);
-				}
 				steps = -1;
 			}
 			else if (preClick == 1 || preClick == 2) {
@@ -164,6 +159,7 @@ public class JackGUI implements ActionListener {
 						break;
 					}
 				}
+				System.out.printf("x: %d ,y: %d\n",x,y);
 				Swap(people[x], people[y]);
 				// System.out.println("Swap success\n");
 			}
@@ -197,7 +193,6 @@ public class JackGUI implements ActionListener {
 					//mainwindow.remove(people[i]);
 					exchange--;
 				}
-				break;
 			}
 		}
 	}
@@ -980,6 +975,7 @@ public class JackGUI implements ActionListener {
 					people[i].setDead();
 			}
 		}
+		exchange = rotate = steps = 0;
 		System.out.printf("fuck me\n");
 	}
 
