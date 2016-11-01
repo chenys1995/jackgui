@@ -38,8 +38,9 @@ public class JackGUI implements ActionListener {
 		public void setDead() {
 			IsDead = true;
 			if (this.character == 6) {
-				this.setIcon(new ImageIcon("res/crossroad_0.png"));
-				this.setDisabledIcon(new ImageIcon("res/crossroad_0.png"));
+				this.setIcon(new ImageIcon("res/crossroad_360.png"));
+				this.setDisabledIcon(new ImageIcon("res/crossroad_360.png"));
+				this.angle = 360;
 			} else {
 				this.setIcon(new ImageIcon("res/triroad_" + this.angle + ".png"));
 				this.setDisabledIcon(new ImageIcon("res/triroad_" + this.angle + ".png"));
