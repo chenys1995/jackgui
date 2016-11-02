@@ -125,11 +125,7 @@ public class JackGUI implements ActionListener {
 			preClick = 7;
 			ok.setEnabled(true);
 		} else if (e.getSource() == ok) {
-			move++;
-			if (move == 5) {
-				move = 1;
-				round_done();
-			}
+			
 			System.out.printf("preClick: %d\n", preClick);
 			actions[preClick].setEnabled(false);
 			if (preClick == 0 || preClick ==3 || preClick == 4 || preClick == 5) {
@@ -166,6 +162,11 @@ public class JackGUI implements ActionListener {
 			}
 			for (int i = 0; i < 9; i++) {
 				people[i].setEnabled(false);
+			}
+			move++;
+			if (move == 5) {
+				move = 1;
+				round_done();
 			}
 		}
 		for (int i = 0; i < 9; i++) {
