@@ -130,7 +130,7 @@ public class JackGUI implements ActionListener {
 				move = 1;
 				round_done();
 			}
-			System.out.printf("preClick: %d\n", preClick);
+			//System.out.printf("preClick: %d\n", preClick);
 			actions[preClick].setEnabled(false);
 			if (preClick == 0 || preClick ==3 || preClick == 4 || preClick == 5) {
 					Holmes.setEnabled(false);
@@ -199,17 +199,23 @@ public class JackGUI implements ActionListener {
 	}
 
 	public void Swap(myButton x, myButton y) {
+		//*
 		cons.gridx = x.gridx;
 		cons.gridy = x.gridy;
 		mainwindow.add(y, cons);
 		cons.gridx = y.gridx;
 		cons.gridy = y.gridy;
 		mainwindow.add(x, cons);
+		//System.out.printf("Before Swap x.grid(x,y): (%d,%d),\n",x.gridx,x.gridy );
+		//System.out.printf("Before Swap y.grid(x,y): (%d,%d),\n",y.gridx,y.gridy );
 		int t = x.gridx, v = x.gridy;
 		x.gridx = y.gridx;
 		x.gridy = y.gridy;
 		y.gridx = t;
 		y.gridy = v;
+		//System.out.printf("After Swap x.grid(x,y): (%d,%d),\n",x.gridx,x.gridy );
+		//System.out.printf("After Swap y.grid(x,y): (%d,%d),\n",y.gridx,y.gridy );
+		/**/
 		mainwindow.revalidate();
 		mainwindow.repaint();
 	}
