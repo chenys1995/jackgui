@@ -6,8 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.List;;
-
+import java.util.List;
+import java.util.Stack;
 public class JackGUI implements ActionListener, Cloneable {
 	class myButton extends JButton {
 		/**
@@ -62,6 +62,7 @@ public class JackGUI implements ActionListener, Cloneable {
 	myButton dog = new myButton(new ImageIcon("res/dog.png"));
 	myButton ok = new myButton(new ImageIcon("res/ok.png"));
 	myButton displayJack = new myButton(new ImageIcon("res/ok.png"));
+	Stack<myButton> card=new Stack<myButton>();
 	JTextField rounds = new JTextField(10);
 	JTextField scores = new JTextField(10);
 	JTextField jackid = new JTextField(10);
@@ -123,6 +124,9 @@ public class JackGUI implements ActionListener, Cloneable {
 			exchange = 2;
 		} else if (e.getSource() == actions[7]) {
 			preClick = 7;
+			myButton p = card.pop();
+			if(!p.IsDead)p.setDead();
+			actions[7].setEnabled(false);
 			ok.setEnabled(true);
 		} else if (e.getSource() == ok) {
 
@@ -340,30 +344,54 @@ public class JackGUI implements ActionListener, Cloneable {
 				break;
 			case 5:
 				myButton p =null;
-				int sp=0;
+				int sp=0,t;
 				dead =  g.num_seen();
 				g.Move(g.actions[5], g.Holmes, 1);
-				if (Math.abs(dead - 4.5) < Math.abs(g.num_seen() - 4.5)){
+				t = g.num_seen();
+				if (Math.abs(dead - 4.5) < Math.abs(t - 4.5)){
+					dead = t;
 					p = Holmes;
 					sp = 1;
 				}
 				g.Move(g.actions[5], g.Watson, 1);
-				if (Math.abs(dead - 4.5) < Math.abs(g.num_seen() - 4.5)){
+				t = g.num_seen();
+				if (Math.abs(dead - 4.5) < Math.abs(t - 4.5)){
+					dead = t;
 					p = Watson;
 					sp = 1;
 				}
 				g.Move(g.actions[5], g.dog, 1);
-				if (Math.abs(dead - 4.5) < Math.abs(g.num_seen() - 4.5)){
+				t = g.num_seen();
+				if (Math.abs(dead - 4.5) < Math.abs(t - 4.5)){
+					dead = t;
 					p = dog;
 					sp = 1;
 				}
 				if(sp > 0)
 					Move(actions[5],p,sp);
-				
 				break;
 			case 6:
+				dead =0;
+				int t1 = -1,t2 = -1;
+				for(int y=0;y<9;y++){
+					for(int x =y+1;x<9;x++){
+						if(x!=y){
+							g.Swap(g.people[x],people[y]);
+							t = g.num_seen();
+							if (Math.abs(dead - 4.5) < Math.abs(t - 4.5)){
+								dead = t;
+								t1 =x;
+								t2 =y;
+							}
+						}
+					}
+				}
+				Swap(people[t1],people[t2]);
 				break;
 			case 7:
+				myButton b = card.pop();
+				if(!b.IsDead)b.setDead();
+				actions[7].setEnabled(false);
 				break;
 			}
 		}
@@ -414,7 +442,6 @@ public class JackGUI implements ActionListener, Cloneable {
 		mainwindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainwindow.getContentPane().setLayout(new GridBagLayout());
 		Random rand = new Random();
-		jack = rand.nextInt(9) + 1;
 		round = 1;
 		move = 1;
 		score = 0;
@@ -501,6 +528,7 @@ public class JackGUI implements ActionListener, Cloneable {
 					mainwindow.add(displayJack, cons);
 				}
 			}
+			
 		}
 		for (int i = 0; i < 9; i++)
 			people[i].setEnabled(false);
@@ -521,6 +549,10 @@ public class JackGUI implements ActionListener, Cloneable {
 				actions[i + 4].setEnabled(true);
 			}
 		}
+		for(int i=0;i<9;i++){
+			card.push(people[(Integer) order.toArray()[i]]);
+		}
+		jack = card.pop().character;
 	}
 
 	public void round_done() {
