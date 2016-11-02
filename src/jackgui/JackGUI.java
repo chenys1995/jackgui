@@ -979,7 +979,518 @@ public class JackGUI implements ActionListener {
 		exchange = rotate = steps = 0;
 		System.out.printf("fuck me\n");
 	}
-
+	public int num_seen(){
+		boolean seen[] = new boolean[9];
+		for (int i = 0; i < 9; i++)
+			seen[i] = false;
+		//for dog
+		//left
+		if (dog.gridx == 0 && dog.gridy == 1) {
+			if (people[0].angle == 90)
+				;
+			else if (people[0].angle == 270 || people[1].angle == 90) {
+				seen[0] = true;
+			} else if (people[1].angle == 270 || people[2].angle == 90) {
+				seen[0] = true;
+				seen[1] = true;
+			} else {
+				seen[0] = true;
+				seen[1] = true;
+				seen[2] = true;
+			}
+		} else if (dog.gridx == 0 && dog.gridy == 2) {
+			if (people[3].angle == 90)
+				;
+			else if (people[3].angle == 270 || people[4].angle == 90) {
+				seen[3] = true;
+			} else if (people[4].angle == 270 || people[5].angle == 90) {
+				seen[3] = true;
+				seen[4] = true;
+			} else {
+				seen[3] = true;
+				seen[4] = true;
+				seen[5] = true;
+			}
+		} else if (dog.gridx == 0 && dog.gridy == 3) {
+			if (people[6].angle == 90)
+				;
+			else if (people[6].angle == 270 || people[7].angle == 90) {
+				seen[6] = true;
+			} else if (people[7].angle == 270 || people[8].angle == 90) {
+				seen[7] = true;
+				seen[8] = true;
+			} else {
+				seen[6] = true;
+				seen[7] = true;
+				seen[8] = true;
+			}
+		}
+		//up
+		else if (dog.gridx == 1 && dog.gridy == 0) {
+			if (people[0].angle == 180)
+				;
+			else if (people[0].angle == 0 || people[3].angle == 180) {
+				seen[0] = true;
+			} else if (people[3].angle == 0 || people[6].angle == 180) {
+				seen[0] = true;
+				seen[3] = true;
+			} else {
+				seen[0] = true;
+				seen[3] = true;
+				seen[6] = true;
+			}
+		} else if (dog.gridx == 2 && dog.gridy == 0) {
+			if (people[1].angle == 180)
+				;
+			else if (people[1].angle == 0 || people[4].angle == 180) {
+				seen[1] = true;
+			} else if (people[4].angle == 0 || people[7].angle == 180) {
+				seen[1] = true;
+				seen[4] = true;
+			} else {
+				seen[1] = true;
+				seen[4] = true;
+				seen[7] = true;
+			}
+		} else if (dog.gridx == 3 && dog.gridy == 0) {
+			if (people[2].angle == 180)
+				;
+			else if (people[2].angle == 0 || people[5].angle == 180) {
+				seen[2] = true;
+			} else if (people[5].angle == 0 || people[8].angle == 180) {
+				seen[2] = true;
+				seen[5] = true;
+			} else {
+				seen[2] = true;
+				seen[5] = true;
+				seen[8] = true;
+			}
+		}
+		//right
+		else if (dog.gridx == 4 && dog.gridy == 1) {
+			if (people[2].angle == 270)
+				;
+			else if (people[2].angle == 90 || people[1].angle == 270) {
+				seen[2] = true;
+			} else if (people[1].angle == 90 || people[0].angle == 270) {
+				seen[2] = true;
+				seen[1] = true;
+			} else {
+				seen[2] = true;
+				seen[1] = true;
+				seen[0] = true;
+			}
+		} else if (dog.gridx == 4 && dog.gridy == 2) {
+			if (people[5].angle == 270)
+				;
+			else if (people[5].angle == 90 || people[4].angle == 270) {
+				seen[5] = true;
+			} else if (people[4].angle == 90 || people[3].angle == 270) {
+				seen[5] = true;
+				seen[4] = true;
+			} else {
+				seen[5] = true;
+				seen[4] = true;
+				seen[3] = true;
+			}
+		} else if (dog.gridx == 4 && dog.gridy == 3) {
+			if (people[8].angle == 270)
+				;
+			else if (people[8].angle == 90 || people[7].angle == 270) {
+				seen[8] = true;
+			} else if (people[7].angle == 90 || people[6].angle == 270) {
+				seen[8] = true;
+				seen[7] = true;
+			} else {
+				seen[8] = true;
+				seen[7] = true;
+				seen[6] = true;
+			}
+		}
+		//down
+		else if (dog.gridx == 1 && dog.gridy == 4) {
+			if (people[6].angle == 0)
+				;
+			else if (people[6].angle == 180 || people[3].angle == 0) {
+				seen[6] = true;
+			} else if (people[3].angle == 180 || people[0].angle == 0) {
+				seen[6] = true;
+				seen[3] = true;
+			} else {
+				seen[6] = true;
+				seen[3] = true;
+				seen[0] = true;
+			}
+		} else if (dog.gridx == 2 && dog.gridy == 4) {
+			if (people[7].angle == 0)
+				;
+			else if (people[7].angle == 180 || people[4].angle == 0) {
+				seen[7] = true;
+			} else if (people[4].angle == 180 || people[1].angle == 0) {
+				seen[7] = true;
+				seen[4] = true;
+			} else {
+				seen[7] = true;
+				seen[4] = true;
+				seen[1] = true;
+			}
+		} else if (dog.gridx == 3 && dog.gridy == 4) {
+			if (people[8].angle == 0)
+				;
+			else if (people[8].angle == 180 || people[5].angle == 0) {
+				seen[8] = true;
+			} else if (people[5].angle == 180 || people[2].angle == 0) {
+				seen[8] = true;
+				seen[5] = true;
+			} else {
+				seen[8] = true;
+				seen[5] = true;
+				seen[2] = true;
+			}
+		}
+		//for Holmes
+		//left
+		if (Holmes.gridx == 0 && Holmes.gridy == 1) {
+			if (people[0].angle == 90)
+				;
+			else if (people[0].angle == 270 || people[1].angle == 90) {
+				seen[0] = true;
+			} else if (people[1].angle == 270 || people[2].angle == 90) {
+				seen[0] = true;
+				seen[1] = true;
+			} else {
+				seen[0] = true;
+				seen[1] = true;
+				seen[2] = true;
+			}
+		} else if (Holmes.gridx == 0 && Holmes.gridy == 2) {
+			if (people[3].angle == 90)
+				;
+			else if (people[3].angle == 270 || people[4].angle == 90) {
+				seen[3] = true;
+			} else if (people[4].angle == 270 || people[5].angle == 90) {
+				seen[3] = true;
+				seen[4] = true;
+			} else {
+				seen[3] = true;
+				seen[4] = true;
+				seen[5] = true;
+			}
+		} else if (Holmes.gridx == 0 && Holmes.gridy == 3) {
+			if (people[6].angle == 90)
+				;
+			else if (people[6].angle == 270 || people[7].angle == 90) {
+				seen[6] = true;
+			} else if (people[7].angle == 270 || people[8].angle == 90) {
+				seen[6] = true;
+				seen[7] = true;
+			} else {
+				seen[6] = true;
+				seen[7] = true;
+				seen[8] = true;
+			}
+		}
+		//up
+		else if (Holmes.gridx == 1 && Holmes.gridy == 0) {
+			if (people[0].angle == 180)
+				;
+			else if (people[0].angle == 0 || people[3].angle == 180) {
+				seen[0] = true;
+			} else if (people[3].angle == 0 || people[6].angle == 180) {
+				seen[0] = true;
+				seen[3] = true;
+			} else {
+				seen[0] = true;
+				seen[3] = true;
+				seen[6] = true;
+			}
+		} else if (Holmes.gridx == 2 && Holmes.gridy == 0) {
+			if (people[1].angle == 180)
+				;
+			else if (people[1].angle == 0 || people[4].angle == 180) {
+				seen[1] = true;
+			} else if (people[4].angle == 0 || people[7].angle == 180) {
+				seen[1] = true;
+				seen[4] = true;
+			} else {
+				seen[1] = true;
+				seen[4] = true;
+				seen[7] = true;
+			}
+		} else if (Holmes.gridx == 3 && Holmes.gridy == 0) {
+			if (people[2].angle == 180)
+				;
+			else if (people[2].angle == 0 || people[5].angle == 180) {
+				seen[2] = true;
+			} else if (people[5].angle == 0 || people[8].angle == 180) {
+				seen[2] = true;
+				seen[5] = true;
+			} else {
+				seen[2] = true;
+				seen[5] = true;
+				seen[8] = true;
+			}
+		}
+		//right
+		else if (Holmes.gridx == 4 && Holmes.gridy == 1) {
+			if (people[2].angle == 270)
+				;
+			else if (people[2].angle == 90 || people[1].angle == 270) {
+				seen[2] = true;
+			} else if (people[1].angle == 90 || people[0].angle == 270) {
+				seen[2] = true;
+				seen[1] = true;
+			} else {
+				seen[2] = true;
+				seen[1] = true;
+				seen[0] = true;
+			}
+		} else if (Holmes.gridx == 4 && Holmes.gridy == 2) {
+			if (people[5].angle == 270)
+				;
+			else if (people[5].angle == 90 || people[4].angle == 270) {
+				seen[5] = true;
+			} else if (people[4].angle == 90 || people[3].angle == 270) {
+				seen[5] = true;
+				seen[4] = true;
+			} else {
+				seen[5] = true;
+				seen[4] = true;
+				seen[3] = true;
+			}
+		} else if (Holmes.gridx == 4 && Holmes.gridy == 3) {
+			if (people[8].angle == 270)
+				;
+			else if (people[8].angle == 90 || people[7].angle == 270) {
+				seen[8] = true;
+			} else if (people[7].angle == 90 || people[6].angle == 270) {
+				seen[8] = true;
+				seen[7] = true;
+			} else {
+				seen[8] = true;
+				seen[7] = true;
+				seen[6] = true;
+			}
+		}
+		//down
+		else if (Holmes.gridx == 1 && Holmes.gridy == 4) {
+			if (people[6].angle == 0)
+				;
+			else if (people[6].angle == 180 || people[3].angle == 0) {
+				seen[6] = true;
+			} else if (people[3].angle == 180 || people[0].angle == 0) {
+				seen[6] = true;
+				seen[3] = true;
+			} else {
+				seen[6] = true;
+				seen[3] = true;
+				seen[0] = true;
+			}
+		} else if (Holmes.gridx == 2 && Holmes.gridy == 4) {
+			if (people[7].angle == 0)
+				;
+			else if (people[7].angle == 180 || people[4].angle == 0) {
+				seen[7] = true;
+			} else if (people[4].angle == 180 || people[1].angle == 0) {
+				seen[7] = true;
+				seen[4] = true;
+			} else {
+				seen[7] = true;
+				seen[4] = true;
+				seen[1] = true;
+			}
+		} else if (Holmes.gridx == 3 && Holmes.gridy == 4) {
+			if (people[8].angle == 0)
+				;
+			else if (people[8].angle == 180 || people[5].angle == 0) {
+				seen[8] = true;
+			} else if (people[5].angle == 180 || people[2].angle == 0) {
+				seen[8] = true;
+				seen[5] = true;
+			} else {
+				seen[8] = true;
+				seen[5] = true;
+				seen[2] = true;
+			}
+		}
+		//for Watson
+		//left
+		if (Watson.gridx == 0 && Watson.gridy == 1) {
+			if (people[0].angle == 90)
+				;
+			else if (people[0].angle == 270 || people[1].angle == 90) {
+				seen[0] = true;
+			} else if (people[1].angle == 270 || people[2].angle == 90) {
+				seen[0] = true;
+				seen[1] = true;
+			} else {
+				seen[0] = true;
+				seen[1] = true;
+				seen[2] = true;
+			}
+		} else if (Watson.gridx == 0 && Watson.gridy == 2) {
+			if (people[3].angle == 90)
+				;
+			else if (people[3].angle == 270 || people[4].angle == 90) {
+				seen[3] = true;
+			} else if (people[4].angle == 270 || people[5].angle == 90) {
+				seen[3] = true;
+				seen[4] = true;
+			} else {
+				seen[3] = true;
+				seen[4] = true;
+				seen[5] = true;
+			}
+		} else if (Watson.gridx == 0 && Watson.gridy == 3) {
+			if (people[6].angle == 90)
+				;
+			else if (people[6].angle == 270 || people[7].angle == 90) {
+				seen[6] = true;
+			} else if (people[7].angle == 270 || people[8].angle == 90) {
+				seen[6] = true;
+				seen[7] = true;
+			} else {
+				seen[6] = true;
+				seen[7] = true;
+				seen[8] = true;
+			}
+		}
+		//up
+		else if (Watson.gridx == 1 && Watson.gridy == 0) {
+			if (people[0].angle == 180)
+				;
+			else if (people[0].angle == 0 || people[3].angle == 180) {
+				seen[0] = true;
+			} else if (people[3].angle == 0 || people[6].angle == 180) {
+				seen[0] = true;
+				seen[3] = true;
+			} else {
+				seen[0] = true;
+				seen[3] = true;
+				seen[6] = true;
+			}
+		} else if (Watson.gridx == 2 && Watson.gridy == 0) {
+			if (people[1].angle == 180)
+				;
+			else if (people[1].angle == 0 || people[4].angle == 180) {
+				seen[1] = true;
+			} else if (people[4].angle == 0 || people[7].angle == 180) {
+				seen[1] = true;
+				seen[4] = true;
+			} else {
+				seen[1] = true;
+				seen[4] = true;
+				seen[7] = true;
+			}
+		} else if (Watson.gridx == 3 && Watson.gridy == 0) {
+			if (people[2].angle == 180)
+				;
+			else if (people[2].angle == 0 || people[5].angle == 180) {
+				seen[2] = true;
+			} else if (people[5].angle == 0 || people[8].angle == 180) {
+				seen[2] = true;
+				seen[5] = true;
+			} else {
+				seen[2] = true;
+				seen[5] = true;
+				seen[8] = true;
+			}
+		}
+		//right
+		else if (Watson.gridx == 4 && Watson.gridy == 1) {
+			if (people[2].angle == 270)
+				;
+			else if (people[2].angle == 90 || people[1].angle == 270) {
+				seen[2] = true;
+			} else if (people[1].angle == 90 || people[0].angle == 270) {
+				seen[2] = true;
+				seen[1] = true;
+			} else {
+				seen[2] = true;
+				seen[1] = true;
+				seen[0] = true;
+			}
+		} else if (Watson.gridx == 4 && Watson.gridy == 2) {
+			if (people[5].angle == 270)
+				;
+			else if (people[5].angle == 90 || people[4].angle == 270) {
+				seen[5] = true;
+			} else if (people[4].angle == 90 || people[3].angle == 270) {
+				seen[5] = true;
+				seen[4] = true;
+			} else {
+				seen[5] = true;
+				seen[4] = true;
+				seen[3] = true;
+			}
+		} else if (Watson.gridx == 4 && Watson.gridy == 3) {
+			if (people[8].angle == 270)
+				;
+			else if (people[8].angle == 90 || people[7].angle == 270) {
+				seen[8] = true;
+			} else if (people[7].angle == 90 || people[6].angle == 270) {
+				seen[8] = true;
+				seen[7] = true;
+			} else {
+				seen[8] = true;
+				seen[7] = true;
+				seen[6] = true;
+			}
+		}
+		//down
+		else if (Watson.gridx == 1 && Watson.gridy == 4) {
+			if (people[6].angle == 0)
+				;
+			else if (people[6].angle == 180 || people[3].angle == 0) {
+				seen[6] = true;
+			} else if (people[3].angle == 180 || people[0].angle == 0) {
+				seen[6] = true;
+				seen[3] = true;
+			} else {
+				seen[6] = true;
+				seen[3] = true;
+				seen[0] = true;
+			}
+		} else if (Watson.gridx == 2 && Watson.gridy == 4) {
+			if (people[7].angle == 0)
+				;
+			else if (people[7].angle == 180 || people[4].angle == 0) {
+				seen[7] = true;
+			} else if (people[4].angle == 180 || people[1].angle == 0) {
+				seen[7] = true;
+				seen[4] = true;
+			} else {
+				seen[7] = true;
+				seen[4] = true;
+				seen[1] = true;
+			}
+		} else if (Watson.gridx == 3 && Watson.gridy == 4) {
+			if (people[8].angle == 0)
+				;
+			else if (people[8].angle == 180 || people[5].angle == 0) {
+				seen[8] = true;
+			} else if (people[5].angle == 180 || people[2].angle == 0) {
+				seen[8] = true;
+				seen[5] = true;
+			} else {
+				seen[8] = true;
+				seen[5] = true;
+				seen[2] = true;
+			}
+		}
+		int result =0 ;
+		//boolean jack_seen = false;
+		for (int i = 0; i < 9; i++) {
+			if(seen[i])result ++;
+			/*if (jack == people[i].character) {
+				if (seen[i])
+					jack_seen = true;
+				else
+					jack_seen = false;
+			}*/
+		}
+		return result;
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		JackGUI gui = new JackGUI();
