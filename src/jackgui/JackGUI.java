@@ -307,7 +307,7 @@ public class JackGUI implements ActionListener, Cloneable {
 			case 1:case 2:
 				int s = -1,a=0;
 				for (int p = 0; p < 9; p++) {
-					for(int pi = 90 ; pi <360;pi+=90){
+					for(int pi = 0 ; pi < 360;pi += 90){
 						g.Spin(g.actions[1], g.people[p], pi);
 						if(Math.abs(dead - 4.5) < Math.abs(g.num_seen() - 4.5)) {
 							s = p;
