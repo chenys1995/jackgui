@@ -125,9 +125,46 @@ public class JackGUI implements ActionListener, Cloneable {
 		} else if (e.getSource() == actions[7]) {
 			preClick = 7;
 			myButton p = card.pop();
-			if(!p.IsDead)p.setDead();
 			actions[7].setEnabled(false);
 			ok.setEnabled(true);
+			//plus score or people dead
+			if(round % 2 == 0){
+				if(move == 1 || move == 4){
+					switch(p.character){
+					case 1:score += 2;break;
+					case 2:score += 0;break;
+					case 3:score += 1;break;
+					case 4:score += 0;break;
+					case 5:score += 1;break;
+					case 6:score += 1;break;
+					case 7:score += 1;break;
+					case 8:score += 1;break;
+					case 9:score += 1;break;
+					}
+				}
+				else {
+					if(!p.IsDead)p.setDead();
+				}
+			}
+			else {
+				if(move == 2 || move == 3){
+					switch(p.character){
+					case 1:score += 2;break;
+					case 2:score += 0;break;
+					case 3:score += 1;break;
+					case 4:score += 0;break;
+					case 5:score += 1;break;
+					case 6:score += 1;break;
+					case 7:score += 1;break;
+					case 8:score += 1;break;
+					case 9:score += 1;break;
+					}
+				}
+				else{
+					if(!p.IsDead)p.setDead();
+				}
+			}
+			refresh_score();
 		} else if (e.getSource() == ok) {
 
 			System.out.printf("preClick: %d\n", preClick);
@@ -256,7 +293,15 @@ public class JackGUI implements ActionListener, Cloneable {
 			mainwindow.repaint();
 		}
 	}
-
+	public void refresh_score(){
+		Font f = new Font("SansSerif", Font.BOLD, 18);
+		scores.setEditable(false);
+		scores.setFont(f);
+		String lol = "Jack score " + score;
+		scores.setText(lol);
+		mainwindow.revalidate();
+		mainwindow.repaint();
+	}
 	public int priority_of(myButton act) {
 		if (act == actions[0] || act == actions[3] || act == actions[4])
 			return 1;
@@ -269,7 +314,18 @@ public class JackGUI implements ActionListener, Cloneable {
 		else
 			return 0;
 	}
-
+	public void random_agent(int do_act) {
+		List<myButton> available_list = new ArrayList<myButton>();
+		for(int i=0;i<8;i++){
+			if (actions[i].isEnabled()){
+				available_list.add(actions[i]);
+			}
+		}
+		Random r = new Random();
+		for (int i = 0; i < do_act; i++) {
+			int n = r.nextInt(4);
+		}
+	}
 	public void agent(JackGUI gui, int do_act) {
 		int H = -1;
 		//choose 1 or 2 actions
@@ -390,8 +446,45 @@ public class JackGUI implements ActionListener, Cloneable {
 				break;
 			case 7:
 				myButton b = card.pop();
-				if(!b.IsDead)b.setDead();
 				actions[7].setEnabled(false);
+				if(round % 2 == 0){
+					if(move == 1 || move == 4){
+						switch(b.character){
+						case 1:score += 2;break;
+						case 2:score += 0;break;
+						case 3:score += 1;break;
+						case 4:score += 0;break;
+						case 5:score += 1;break;
+						case 6:score += 1;break;
+						case 7:score += 1;break;
+						case 8:score += 1;break;
+						case 9:score += 1;break;
+						}
+					}
+					else {
+						if(!b.IsDead)b.setDead();
+					}
+				}
+				else {
+					if(move == 2 || move == 3){
+						switch(b.character){
+						case 1:score += 2;break;
+						case 2:score += 0;break;
+						case 3:score += 1;break;
+						case 4:score += 0;break;
+						case 5:score += 1;break;
+						case 6:score += 1;break;
+						case 7:score += 1;break;
+						case 8:score += 1;break;
+						case 9:score += 1;break;
+						}
+					}
+					else{
+						if(!b.IsDead)b.setDead();
+					}
+				}
+				refresh_score();
+				refresh_score();
 				break;
 			}
 		}
@@ -553,8 +646,20 @@ public class JackGUI implements ActionListener, Cloneable {
 			card.push(people[(Integer) order.toArray()[i]]);
 		}
 		jack = card.pop().character;
+		game_start();
 	}
-
+	public void game_start(){
+		for(round = 1;round <= 8;round++){
+			for(move = 1;move <= 4;move++){
+				if(round % 2 == 0){
+					
+				}
+				else {
+					
+				}
+			}
+		}
+	}
 	public void round_done() {
 		myButton [] jesus = new myButton [9];
 		int [] bible = new int [9];
