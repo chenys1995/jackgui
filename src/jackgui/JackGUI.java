@@ -1243,13 +1243,37 @@ public class JackGUI implements ActionListener, Cloneable {
 					people[bible[i]].setDead();
 			}
 		} else if (!jack_seen) {
+			score++;
 			for (int i = 0; i < 9; i++) {
 				if (seen[i])
 					people[bible[i]].setDead();
 			}
 		}
+		int gameover = 0;
+		for(int i = 0; i < 9 ;i++){
+			if(!people[i].IsDead){
+				gameover++;
+				if(gameover==2)break;
+			}
+		}
+		//determine who wins
+		if(gameover == 1 && score >= 6&& !jack_seen&& round==9){
+			System.out.printf("Jack has endured, Jack wins\n");
+		}
+		else if(gameover == 1 && score >= 6&& jack_seen){
+			System.out.printf("Though the score, Jack's seen\nHolmes wins\n");
+		}
+		else if(gameover == 1 ){
+			System.out.printf("all are dead\nHolmes wins\n");
+		}
+		else if(score == 6){
+			System.out.printf("Jack's got 6 hourglasses\nJack wins\n")
+		}
+		else if(round == 9){
+			System.out.printf("Jack wins\n");
+		}
 		exchange = rotate = steps = 0;
-		System.out.printf("fuck me\n");
+		//System.out.printf("fuck me\n");
 	}
 
 	public int num_seen() {
