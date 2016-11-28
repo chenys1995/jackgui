@@ -776,7 +776,9 @@ public class JackGUI implements ActionListener, Cloneable {
 				}
 				Delay(millis);
 				switch(investigator_agent){
+
 				case 0:random_agent();break;
+
 				case 1:
 					inv_agent(this,avg);
 					inv_agent(this,avg);
