@@ -293,6 +293,15 @@ public class JackGUI implements ActionListener, Cloneable {
 			mainwindow.repaint();
 		}
 	}
+	public void refresh_round(){
+		Font f = new Font("SansSerif", Font.BOLD, 18);
+		rounds.setEditable(false);
+		rounds.setFont(f);
+		String lol = "Round " + round;
+		rounds.setText(lol);
+		mainwindow.revalidate();
+		mainwindow.repaint();
+	}
 	public void refresh_score(){
 		Font f = new Font("SansSerif", Font.BOLD, 18);
 		scores.setEditable(false);
@@ -315,17 +324,93 @@ public class JackGUI implements ActionListener, Cloneable {
 			return 0;
 	}
 	public void random_agent(int do_act) {
-		List<myButton> available_list = new ArrayList<myButton>();
+		List<Integer> available_list = new ArrayList<Integer>();
+		int H = 0;
 		for(int i=0;i<8;i++){
 			if (actions[i].isEnabled()){
-				available_list.add(actions[i]);
+				available_list.add(i);
 			}
 		}
 		Random r = new Random();
 		for (int i = 0; i < do_act; i++) {
 			int n = r.nextInt(4);
+			H = available_list.get(n);
+		}
+		actions[H].setEnabled(false);
+		switch (H) {
+		case 0:
+			Move(actions[0], null, r.nextInt(2));
+			break;
+		case 1:case 2:
+			Spin(actions[1],people[r.nextInt(9)],r.nextInt(4)*90);
+			break;
+		case 3:
+			Move(actions[3], null, r.nextInt(2));
+			break;
+		case 4:
+			Move(actions[4], null, r.nextInt(2));
+			break;
+		case 5:
+			myButton p =null;
+			switch(r.nextInt(3)){
+			case 0: p = Holmes;break;
+			case 1: p = Watson;break;
+			case 2: p = dog;break;
+			}
+			Move(actions[5],p,r.nextInt(1));
+			break;
+		case 6:
+			int s=r.nextInt(9),t=r.nextInt(9);
+			while(s==t){
+				s=r.nextInt(9);
+			}
+			Swap(people[s],people[t]);
+			break;
+		case 7:
+			myButton b = card.pop();
+			actions[7].setEnabled(false);
+			if(round % 2 == 0){
+				if(move == 1 || move == 4){
+					switch(b.character){
+					case 1:score += 2;break;
+					case 2:score += 0;break;
+					case 3:score += 1;break;
+					case 4:score += 0;break;
+					case 5:score += 1;break;
+					case 6:score += 1;break;
+					case 7:score += 1;break;
+					case 8:score += 1;break;
+					case 9:score += 1;break;
+					}
+				}
+				else {
+					if(!b.IsDead)b.setDead();
+				}
+			}
+			else {
+				if(move == 2 || move == 3){
+					switch(b.character){
+					case 1:score += 2;break;
+					case 2:score += 0;break;
+					case 3:score += 1;break;
+					case 4:score += 0;break;
+					case 5:score += 1;break;
+					case 6:score += 1;break;
+					case 7:score += 1;break;
+					case 8:score += 1;break;
+					case 9:score += 1;break;
+					}
+				}
+				else{
+					if(!b.IsDead)b.setDead();
+				}
+			}
+			refresh_score();
+			refresh_score();
+			break;
 		}
 	}
+
 	public void agent(JackGUI gui, int do_act) {
 		int H = -1;
 		//choose 1 or 2 actions
@@ -339,6 +424,7 @@ public class JackGUI implements ActionListener, Cloneable {
 						H = j;
 				}
 			}
+			actions[H].setEnabled(false);
 			//judge the most suitable result
 			JackGUI g = null;
 			try {
@@ -646,18 +732,56 @@ public class JackGUI implements ActionListener, Cloneable {
 			card.push(people[(Integer) order.toArray()[i]]);
 		}
 		jack = card.pop().character;
-		game_start();
+		
+		test_agent();
+		//game_start();
+	}
+	public void test_agent(){
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		agent(this,1);
 	}
 	public void game_start(){
-
+		int Jack =0,Investigator = 1;
+		//0 for random agent ;
+		//1 for base agent;
 		for(round = 1;round <= 8;round++){
+			System.out.printf("Round:%d\n",round);
+			refresh_round();
 			for(move = 1;move <= 4;move++){
 				if(round % 2 == 0){
-					
+					switch(Jack){
+					case 0:random_agent(1);break;
+					case 1:agent(this,1);break;
+					}
+					switch(Investigator){
+					case 0:random_agent(1);break;
+					case 1:agent(this,2);break;
+					}
+					switch(Jack){
+					case 0:random_agent(1);break;
+					case 1:agent(this,1);break;
+					}
 				}
 				else {
-					
+					switch(Investigator){
+					case 0:random_agent(1);break;
+					case 1:agent(this,1);break;
+					}
+					switch(Jack){
+					case 0:random_agent(2);break;
+					case 1:agent(this,2);break;
+					}
+					switch(Investigator){
+					case 0:random_agent(1);break;
+					case 1:agent(this,1);break;
+					}
 				}
+				round_done();
 			}
 		}
 	}
