@@ -10,16 +10,18 @@ import java.util.Stack;
 
 
 public class JackGUI implements ActionListener, Cloneable {
-	class myButton extends JButton {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1838929864725400980L;
+	class myButton extends JButton implements Cloneable{
 
+		boolean IsPeople = false, IsDead = false;
+		int gridx, gridy, character, angle = 0;
+		private static final long serialVersionUID = 1838929864725400980L;
 		public myButton(ImageIcon imageIcon) {
 			super(imageIcon);
 		}
-
+		@Override
+		public Object clone() throws CloneNotSupportedException {
+			return super.clone();
+		}
 		public void setxy(int x, int y) {
 			gridx = x;
 			gridy = y;
@@ -49,9 +51,6 @@ public class JackGUI implements ActionListener, Cloneable {
 			mainwindow.repaint();
 			//System.out.printf("%d is dead.\n", character);
 		}
-
-		boolean IsPeople = false, IsDead = false;
-		int gridx, gridy, character, angle = 0;
 	}
 	private static JFrame mainwindow = new JFrame();
 	myButton[] people = new myButton[9];
@@ -75,6 +74,17 @@ public class JackGUI implements ActionListener, Cloneable {
 
 	public JackGUI() {
 
+	}
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		JackGUI clone = (JackGUI) super.clone();
+		clone.people = this.people.clone();
+		clone.actions = this.actions.clone();
+		clone.Holmes = (myButton) this.Holmes.clone();
+		clone.Watson = (myButton) this.Watson.clone();
+		clone.dog = (myButton) this.dog.clone();
+
+		return clone;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -411,7 +421,7 @@ public class JackGUI implements ActionListener, Cloneable {
 		}
 	}
 
-	public void agent(JackGUI gui,Double avg) {
+	public void inv_agent(JackGUI gui,Double avg) {
 		int H = -1;
 		//select the highest priority action.
 		for (int j = 0; j < 8; j++) {
@@ -424,7 +434,7 @@ public class JackGUI implements ActionListener, Cloneable {
 		}
 		actions[H].setEnabled(false);
 		//judge the most suitable result
-		JackGUI g = null;
+		JackGUI g =null;
 		try {
 			g = (JackGUI) gui.clone();
 		} catch (CloneNotSupportedException e) {
@@ -739,13 +749,21 @@ public class JackGUI implements ActionListener, Cloneable {
 			e.printStackTrace();
 		}
 	}
-	public void test_agent(){
-		agent(this,4.5);
+	public void test_agent(int millis){
+		Delay(millis);
+		inv_agent(this,4.5);
+		Delay(millis);
+		inv_agent(this,4.5);
+		Delay(millis);
+		inv_agent(this,4.5);
+		Delay(millis);
+		inv_agent(this,4.5);
+		Delay(millis);
 	}
 	
 	public void game_start(int millis,WinRate Inv,WinRate Jack){
 		int jack_agent =0,investigator_agent = 1;
-		Double avg = 4.0;
+		Double avg = 4.0,min = 1.0,max = 9.0;
 		//0 for random agent ;
 		//1 for base agent;
 		for(round = 1;round <= 8;round++){
@@ -755,34 +773,39 @@ public class JackGUI implements ActionListener, Cloneable {
 				Delay(millis);
 				switch(jack_agent){
 				case 0:random_agent(1);break;
-				case 1:agent(this,avg);break;
+				case 1:inv_agent(this,min);break;
 				}
 				Delay(millis);
 				switch(investigator_agent){
 				case 0:random_agent(2);break;
-				case 1:agent(this,avg);agent(this,avg);break;
+				case 1:
+					inv_agent(this,avg);
+					inv_agent(this,avg);
+					break;
 				}
 				Delay(millis);
 				switch(jack_agent){
 				case 0:random_agent(1);break;
-				case 1:agent(this,avg);break;
+				case 1:inv_agent(this,min);break;
 				}
 			}
 			else {
 				Delay(millis);
 				switch(investigator_agent){
 				case 0:random_agent(1);break;
-				case 1:agent(this,avg);break;
+				case 1:inv_agent(this,avg);break;
 				}
 				Delay(millis);
 				switch(jack_agent){
 				case 0:random_agent(2);break;
-				case 1:agent(this,avg);agent(this,avg);break;
+				case 1:
+					inv_agent(this,min);
+					inv_agent(this,min);break;
 				}
 				Delay(millis);
 				switch(investigator_agent){
 				case 0:random_agent(1);break;
-				case 1:agent(this,avg);break;
+				case 1:inv_agent(this,avg);break;
 				}
 			}
 			Delay(millis);
@@ -1946,10 +1969,12 @@ public class JackGUI implements ActionListener, Cloneable {
 		// TODO Auto-generated method stub
 		WinRate Inv = new WinRate(),Jack = new WinRate();
 		JackGUI gui = new JackGUI();
+		
 		for(int i=0;i<1;i++){
 			gui.onCreate();
 			gui.jackid.setText("jack is ");
 			gui.game_start(1000,Inv,Jack);
+			//gui.test_agent(1000);
 		}
 		Integer percent = ((Double)(Jack.get_winrate() * 100)).intValue();
 		System.out.printf("Jack's winrate : %d%%\n",percent);
