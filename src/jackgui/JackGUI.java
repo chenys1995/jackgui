@@ -17,7 +17,6 @@ public class JackGUI implements ActionListener, Cloneable {
 		private static final long serialVersionUID = 1838929864725400980L;
 
 		public myButton(ImageIcon imageIcon) {
-			// TODO Auto-generated constructor stub
 			super(imageIcon);
 		}
 
@@ -412,172 +411,168 @@ public class JackGUI implements ActionListener, Cloneable {
 		}
 	}
 
-	public void agent(JackGUI gui, int do_act,Double avg) {
+	public void agent(JackGUI gui,Double avg) {
 		int H = -1;
-		//choose 1 or 2 actions
-		for (int i = 0; i < do_act; i++) {
-			//select the highest priority action.
-			for (int j = 0; j < 8; j++) {
-				if (actions[j].isEnabled()) {
-					if (H != -1)
-						H = priority_of(actions[H]) < priority_of(actions[j]) ? j : H;
-					else
-						H = j;
-				}
+		//select the highest priority action.
+		for (int j = 0; j < 8; j++) {
+			if (actions[j].isEnabled()) {
+				if (H != -1)
+					H = priority_of(actions[H]) < priority_of(actions[j]) ? j : H;
+				else
+					H = j;
 			}
-			actions[H].setEnabled(false);
-			//judge the most suitable result
-			JackGUI g = null;
-			try {
-				g = (JackGUI) gui.clone();
-			} catch (CloneNotSupportedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			Double dead = 0.0;
-			switch (H) {
-			case 0:
-				g.Move(g.actions[0], null, 1);
-				dead = (double)g.num_seen();
-				g.Move(g.actions[0], null, 2);
-				// Select the most average cases |(4 or 5)-avg| = 0.5. 
-				// Other cases > 0.5.
-				if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
-					Move(actions[0], null, 1);
-				else
-					Move(actions[0], null, 2);
-				break;
-			case 1:case 2:
-				int s = 0,a=0;
-				for (int p = 0; p < 9; p++) {
-					for(int pi = 0 ; pi < 360;pi += 90){
-						g.Spin(g.actions[1], g.people[p], pi);
-						if(Math.abs(dead - avg) < Math.abs(g.num_seen() - avg)) {
-							s = p;
-							a = pi;
-						}
-						else {
-							dead = (double)g.num_seen() ;
-						}
-					}
-				}
-				Spin(actions[1],people[s],a);
-				break;
-			case 3:
-				g.Move(g.actions[3], null, 1);
-				dead = (double)g.num_seen();
-				g.Move(g.actions[3], null, 2);
-				// Select the most average cases |(4 or 5)-avg| = 0.5. 
-				// Other cases > 0.5.
-				if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
-					Move(actions[3], null, 1);
-				else
-					Move(actions[3], null, 2);
-				break;
-			case 4:
-				g.Move(g.actions[4], null, 1);
-				dead = (double)g.num_seen();
-				g.Move(g.actions[4], null, 2);
-				// Select the most average cases |(4 or 5)-avg| = 0.5. 
-				// Other cases > 0.5.
-				if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
-					Move(actions[4], null, 1);
-				else
-					Move(actions[4], null, 2);
-				break;
-			case 5:
-				myButton p =null;
-				int sp=0,t;
-				dead = (double) g.num_seen();
-				g.Move(g.actions[5], g.Holmes, 1);
-				t = g.num_seen();
-				if (Math.abs(dead - avg) < Math.abs(t - avg)){
-					dead = (double)t;
-					p = Holmes;
-					sp = 1;
-				}
-				g.Move(g.actions[5], g.Watson, 1);
-				t = g.num_seen();
-				if (Math.abs(dead - avg) < Math.abs(t - avg)){
-					dead = (double)t;
-					p = Watson;
-					sp = 1;
-				}
-				g.Move(g.actions[5], g.dog, 1);
-				t = g.num_seen();
-				if (Math.abs(dead - avg) < Math.abs(t - avg)){
-					dead = (double)t;
-					p = dog;
-					sp = 1;
-				}
-				if(sp > 0)
-					Move(actions[5],p,sp);
-				break;
-			case 6:
-				dead =0.0;
-				int t1 = -1,t2 = -1;
-				for(int y=0;y<9;y++){
-					for(int x =y+1;x<9;x++){
-						if(x!=y){
-							g.Swap(g.people[x],people[y]);
-							t = g.num_seen();
-							if (Math.abs(dead - avg) < Math.abs(t - avg)){
-								dead = (double)t;
-								t1 =x;
-								t2 =y;
-							}
-						}
-					}
-				}
-				Swap(people[t1],people[t2]);
-				break;
-			case 7:
-				myButton b = card.pop();
-				actions[7].setEnabled(false);
-				if(round % 2 == 0){
-					if(move == 1 || move == 4){
-						switch(b.character){
-						case 1:score += 2;break;
-						case 2:score += 0;break;
-						case 3:score += 1;break;
-						case 4:score += 0;break;
-						case 5:score += 1;break;
-						case 6:score += 1;break;
-						case 7:score += 1;break;
-						case 8:score += 1;break;
-						case 9:score += 1;break;
-						}
+		}
+		actions[H].setEnabled(false);
+		//judge the most suitable result
+		JackGUI g = null;
+		try {
+			g = (JackGUI) gui.clone();
+		} catch (CloneNotSupportedException e) {
+			
+			e.printStackTrace();
+		}
+		Double dead = 0.0;
+		switch (H) {
+		case 0:
+			g.Move(g.actions[0], null, 1);
+			dead = (double)g.num_seen();
+			g.Move(g.actions[0], null, 2);
+			// Select the most average cases |(4 or 5)-avg| = 0.5. 
+			// Other cases > 0.5.
+			if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
+				Move(actions[0], null, 1);
+			else
+				Move(actions[0], null, 2);
+			break;
+		case 1:case 2:
+			int s = 0,a=0;
+			for (int p = 0; p < 9; p++) {
+				for(int pi = 0 ; pi < 360;pi += 90){
+					g.Spin(g.actions[1], g.people[p], pi);
+					if(Math.abs(dead - avg) < Math.abs(g.num_seen() - avg)) {
+						s = p;
+						a = pi;
 					}
 					else {
-						if(!b.IsDead)b.setDead();
+						dead = (double)g.num_seen() ;
+					}
+				}
+			}
+			Spin(actions[1],people[s],a);
+			break;
+		case 3:
+			g.Move(g.actions[3], null, 1);
+			dead = (double)g.num_seen();
+			g.Move(g.actions[3], null, 2);
+			// Select the most average cases |(4 or 5)-avg| = 0.5. 
+			// Other cases > 0.5.
+			if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
+				Move(actions[3], null, 1);
+			else
+				Move(actions[3], null, 2);
+			break;
+		case 4:
+			g.Move(g.actions[4], null, 1);
+			dead = (double)g.num_seen();
+			g.Move(g.actions[4], null, 2);
+			// Select the most average cases |(4 or 5)-avg| = 0.5. 
+			// Other cases > 0.5.
+			if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
+				Move(actions[4], null, 1);
+			else
+				Move(actions[4], null, 2);
+			break;
+		case 5:
+			myButton p =null;
+			int sp=0,t;
+			dead = (double) g.num_seen();
+			g.Move(g.actions[5], g.Holmes, 1);
+			t = g.num_seen();
+			if (Math.abs(dead - avg) < Math.abs(t - avg)){
+				dead = (double)t;
+				p = Holmes;
+				sp = 1;
+			}
+			g.Move(g.actions[5], g.Watson, 1);
+			t = g.num_seen();
+			if (Math.abs(dead - avg) < Math.abs(t - avg)){
+				dead = (double)t;
+				p = Watson;
+				sp = 1;
+			}
+			g.Move(g.actions[5], g.dog, 1);
+			t = g.num_seen();
+			if (Math.abs(dead - avg) < Math.abs(t - avg)){
+				dead = (double)t;
+				p = dog;
+				sp = 1;
+			}
+			if(sp > 0)
+				Move(actions[5],p,sp);
+			break;
+		case 6:
+			dead =0.0;
+			int t1 = -1,t2 = -1;
+			for(int y=0;y<9;y++){
+				for(int x =y+1;x<9;x++){
+					if(x!=y){
+						g.Swap(g.people[x],people[y]);
+						t = g.num_seen();
+						if (Math.abs(dead - avg) < Math.abs(t - avg)){
+							dead = (double)t;
+							t1 =x;
+							t2 =y;
+						}
+					}
+				}
+			}
+			Swap(people[t1],people[t2]);
+			break;
+		case 7:
+			myButton b = card.pop();
+			actions[7].setEnabled(false);
+			if(round % 2 == 0){
+				if(move == 1 || move == 4){
+					switch(b.character){
+					case 1:score += 2;break;
+					case 2:score += 0;break;
+					case 3:score += 1;break;
+					case 4:score += 0;break;
+					case 5:score += 1;break;
+					case 6:score += 1;break;
+					case 7:score += 1;break;
+					case 8:score += 1;break;
+					case 9:score += 1;break;
 					}
 				}
 				else {
-					if(move == 2 || move == 3){
-						switch(b.character){
-						case 1:score += 2;break;
-						case 2:score += 0;break;
-						case 3:score += 1;break;
-						case 4:score += 0;break;
-						case 5:score += 1;break;
-						case 6:score += 1;break;
-						case 7:score += 1;break;
-						case 8:score += 1;break;
-						case 9:score += 1;break;
-						}
-					}
-					else{
-						if(!b.IsDead)b.setDead();
+					if(!b.IsDead)b.setDead();
+				}
+			}
+			else {
+				if(move == 2 || move == 3){
+					switch(b.character){
+					case 1:score += 2;break;
+					case 2:score += 0;break;
+					case 3:score += 1;break;
+					case 4:score += 0;break;
+					case 5:score += 1;break;
+					case 6:score += 1;break;
+					case 7:score += 1;break;
+					case 8:score += 1;break;
+					case 9:score += 1;break;
 					}
 				}
-				refresh_score();
-				refresh_score();
-				break;
+				else{
+					if(!b.IsDead)b.setDead();
+				}
 			}
-			//System.out.printf("dead: %f\n", dead);
+			refresh_score();
+			refresh_score();
+			break;
 		}
-
-	}
+		//System.out.printf("dead: %f\n", dead);
+}
 
 	public void movepos(myButton b) {
 		// 1st row :right
@@ -737,53 +732,61 @@ public class JackGUI implements ActionListener, Cloneable {
 		
 		
 	}
-	public void test_agent(){
+	public void Delay(int millis){
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(millis);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		agent(this,1,4.5);
 	}
-	public void game_start(WinRate Inv,WinRate Jack){
-		int jack_agent =0,investigator_agent = 1,gameover = 0;
+	public void test_agent(){
+		agent(this,4.5);
+	}
+	
+	public void game_start(int millis,WinRate Inv,WinRate Jack){
+		int jack_agent =0,investigator_agent = 1;
+		Double avg = 4.0;
 		//0 for random agent ;
 		//1 for base agent;
 		for(round = 1;round <= 8;round++){
 			//System.out.printf("Round:%d\n",round);
 			refresh_round();
-			for(move = 1;move <= 4;move++){
-				if(round % 2 == 0){
-					switch(jack_agent){
-					case 0:random_agent(1);break;
-					case 1:agent(this,1,4.5);break;
-					}
-					switch(investigator_agent){
-					case 0:random_agent(2);break;
-					case 1:agent(this,2,4.5);break;
-					}
-					switch(jack_agent){
-					case 0:random_agent(1);break;
-					case 1:agent(this,1,4.5);break;
-					}
+			if(round % 2 == 0){
+				Delay(millis);
+				switch(jack_agent){
+				case 0:random_agent(1);break;
+				case 1:agent(this,avg);break;
 				}
-				else {
-					switch(investigator_agent){
-					case 0:random_agent(1);break;
-					case 1:agent(this,1,4.5);break;
-					}
-					switch(jack_agent){
-					case 0:random_agent(2);break;
-					case 1:agent(this,2,4.5);break;
-					}
-					switch(investigator_agent){
-					case 0:random_agent(1);break;
-					case 1:agent(this,1,4.5);break;
-					}
+				Delay(millis);
+				switch(investigator_agent){
+				case 0:random_agent(2);break;
+				case 1:agent(this,avg);agent(this,avg);break;
 				}
-				if(round_done(Inv,Jack)){return;}
+				Delay(millis);
+				switch(jack_agent){
+				case 0:random_agent(1);break;
+				case 1:agent(this,avg);break;
+				}
 			}
+			else {
+				Delay(millis);
+				switch(investigator_agent){
+				case 0:random_agent(1);break;
+				case 1:agent(this,avg);break;
+				}
+				Delay(millis);
+				switch(jack_agent){
+				case 0:random_agent(2);break;
+				case 1:agent(this,avg);agent(this,avg);break;
+				}
+				Delay(millis);
+				switch(investigator_agent){
+				case 0:random_agent(1);break;
+				case 1:agent(this,avg);break;
+				}
+			}
+			Delay(millis);
+			if(round_done(Inv,Jack)){return;}
 		}
 	}
 	public boolean round_done(WinRate Inv,WinRate Jack) {
@@ -1943,11 +1946,10 @@ public class JackGUI implements ActionListener, Cloneable {
 		// TODO Auto-generated method stub
 		WinRate Inv = new WinRate(),Jack = new WinRate();
 		JackGUI gui = new JackGUI();
-		for(int i=0;i<100;i++){
+		for(int i=0;i<1;i++){
 			gui.onCreate();
 			gui.jackid.setText("jack is ");
-			gui.game_start(Inv,Jack);
-			
+			gui.game_start(1000,Inv,Jack);
 		}
 		Integer percent = ((Double)(Jack.get_winrate() * 100)).intValue();
 		System.out.printf("Jack's winrate : %d%%\n",percent);
