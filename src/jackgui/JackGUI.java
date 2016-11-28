@@ -1,5 +1,4 @@
 package jackgui;
-
 import java.util.Random;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -8,6 +7,8 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+
+
 public class JackGUI implements ActionListener, Cloneable {
 	class myButton extends JButton {
 		/**
@@ -47,13 +48,12 @@ public class JackGUI implements ActionListener, Cloneable {
 			}
 			mainwindow.revalidate();
 			mainwindow.repaint();
-			System.out.printf("%d is dead.\n", character);
+			//System.out.printf("%d is dead.\n", character);
 		}
 
 		boolean IsPeople = false, IsDead = false;
 		int gridx, gridy, character, angle = 0;
 	}
-
 	private static JFrame mainwindow = new JFrame();
 	myButton[] people = new myButton[9];
 	myButton[] actions = new myButton[8];
@@ -205,7 +205,8 @@ public class JackGUI implements ActionListener, Cloneable {
 			move++;
 			if (move == 5) {
 				move = 1;
-				round_done();
+				WinRate Inv=new WinRate(),Jack=new WinRate();
+				round_done(Inv,Jack);
 			}
 		}
 		for (int i = 0; i < 9; i++) {
@@ -319,7 +320,7 @@ public class JackGUI implements ActionListener, Cloneable {
 		else if (act == actions[5])
 			return 3;
 		else if (act == actions[7])
-			return 3;
+			return 2;
 		else
 			return 0;
 	}
@@ -411,7 +412,7 @@ public class JackGUI implements ActionListener, Cloneable {
 		}
 	}
 
-	public void agent(JackGUI gui, int do_act) {
+	public void agent(JackGUI gui, int do_act,Double avg) {
 		int H = -1;
 		//choose 1 or 2 actions
 		for (int i = 0; i < do_act; i++) {
@@ -433,30 +434,30 @@ public class JackGUI implements ActionListener, Cloneable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			int dead = 0;
+			Double dead = 0.0;
 			switch (H) {
 			case 0:
 				g.Move(g.actions[0], null, 1);
-				dead = g.num_seen();
+				dead = (double)g.num_seen();
 				g.Move(g.actions[0], null, 2);
-				// Select the most average cases |(4 or 5)-4.5| = 0.5. 
+				// Select the most average cases |(4 or 5)-avg| = 0.5. 
 				// Other cases > 0.5.
-				if (Math.abs(dead - 4.5) < Math.abs(g.num_seen() - 4.5))
+				if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
 					Move(actions[0], null, 1);
 				else
 					Move(actions[0], null, 2);
 				break;
 			case 1:case 2:
-				int s = -1,a=0;
+				int s = 0,a=0;
 				for (int p = 0; p < 9; p++) {
 					for(int pi = 0 ; pi < 360;pi += 90){
 						g.Spin(g.actions[1], g.people[p], pi);
-						if(Math.abs(dead - 4.5) < Math.abs(g.num_seen() - 4.5)) {
+						if(Math.abs(dead - avg) < Math.abs(g.num_seen() - avg)) {
 							s = p;
 							a = pi;
 						}
 						else {
-							dead = g.num_seen() ;
+							dead = (double)g.num_seen() ;
 						}
 					}
 				}
@@ -464,22 +465,22 @@ public class JackGUI implements ActionListener, Cloneable {
 				break;
 			case 3:
 				g.Move(g.actions[3], null, 1);
-				dead = g.num_seen();
+				dead = (double)g.num_seen();
 				g.Move(g.actions[3], null, 2);
-				// Select the most average cases |(4 or 5)-4.5| = 0.5. 
+				// Select the most average cases |(4 or 5)-avg| = 0.5. 
 				// Other cases > 0.5.
-				if (Math.abs(dead - 4.5) < Math.abs(g.num_seen() - 4.5))
+				if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
 					Move(actions[3], null, 1);
 				else
 					Move(actions[3], null, 2);
 				break;
 			case 4:
 				g.Move(g.actions[4], null, 1);
-				dead = g.num_seen();
+				dead = (double)g.num_seen();
 				g.Move(g.actions[4], null, 2);
-				// Select the most average cases |(4 or 5)-4.5| = 0.5. 
+				// Select the most average cases |(4 or 5)-avg| = 0.5. 
 				// Other cases > 0.5.
-				if (Math.abs(dead - 4.5) < Math.abs(g.num_seen() - 4.5))
+				if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
 					Move(actions[4], null, 1);
 				else
 					Move(actions[4], null, 2);
@@ -487,25 +488,25 @@ public class JackGUI implements ActionListener, Cloneable {
 			case 5:
 				myButton p =null;
 				int sp=0,t;
-				dead =  g.num_seen();
+				dead = (double) g.num_seen();
 				g.Move(g.actions[5], g.Holmes, 1);
 				t = g.num_seen();
-				if (Math.abs(dead - 4.5) < Math.abs(t - 4.5)){
-					dead = t;
+				if (Math.abs(dead - avg) < Math.abs(t - avg)){
+					dead = (double)t;
 					p = Holmes;
 					sp = 1;
 				}
 				g.Move(g.actions[5], g.Watson, 1);
 				t = g.num_seen();
-				if (Math.abs(dead - 4.5) < Math.abs(t - 4.5)){
-					dead = t;
+				if (Math.abs(dead - avg) < Math.abs(t - avg)){
+					dead = (double)t;
 					p = Watson;
 					sp = 1;
 				}
 				g.Move(g.actions[5], g.dog, 1);
 				t = g.num_seen();
-				if (Math.abs(dead - 4.5) < Math.abs(t - 4.5)){
-					dead = t;
+				if (Math.abs(dead - avg) < Math.abs(t - avg)){
+					dead = (double)t;
 					p = dog;
 					sp = 1;
 				}
@@ -513,15 +514,15 @@ public class JackGUI implements ActionListener, Cloneable {
 					Move(actions[5],p,sp);
 				break;
 			case 6:
-				dead =0;
+				dead =0.0;
 				int t1 = -1,t2 = -1;
 				for(int y=0;y<9;y++){
 					for(int x =y+1;x<9;x++){
 						if(x!=y){
 							g.Swap(g.people[x],people[y]);
 							t = g.num_seen();
-							if (Math.abs(dead - 4.5) < Math.abs(t - 4.5)){
-								dead = t;
+							if (Math.abs(dead - avg) < Math.abs(t - avg)){
+								dead = (double)t;
 								t1 =x;
 								t2 =y;
 							}
@@ -573,6 +574,7 @@ public class JackGUI implements ActionListener, Cloneable {
 				refresh_score();
 				break;
 			}
+			//System.out.printf("dead: %f\n", dead);
 		}
 
 	}
@@ -733,8 +735,7 @@ public class JackGUI implements ActionListener, Cloneable {
 		}
 		jack = card.pop().character;
 		
-		//test_agent();
-		game_start();
+		
 	}
 	public void test_agent(){
 		try {
@@ -743,49 +744,49 @@ public class JackGUI implements ActionListener, Cloneable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		agent(this,1);
+		agent(this,1,4.5);
 	}
-	public void game_start(){
-		int Jack =0,Investigator = 1;
+	public void game_start(WinRate Inv,WinRate Jack){
+		int jack_agent =0,investigator_agent = 1,gameover = 0;
 		//0 for random agent ;
 		//1 for base agent;
 		for(round = 1;round <= 8;round++){
-			System.out.printf("Round:%d\n",round);
+			//System.out.printf("Round:%d\n",round);
 			refresh_round();
 			for(move = 1;move <= 4;move++){
 				if(round % 2 == 0){
-					switch(Jack){
+					switch(jack_agent){
 					case 0:random_agent(1);break;
-					case 1:agent(this,1);break;
+					case 1:agent(this,1,4.5);break;
 					}
-					switch(Investigator){
-					case 0:random_agent(1);break;
-					case 1:agent(this,2);break;
+					switch(investigator_agent){
+					case 0:random_agent(2);break;
+					case 1:agent(this,2,4.5);break;
 					}
-					switch(Jack){
+					switch(jack_agent){
 					case 0:random_agent(1);break;
-					case 1:agent(this,1);break;
+					case 1:agent(this,1,4.5);break;
 					}
 				}
 				else {
-					switch(Investigator){
+					switch(investigator_agent){
 					case 0:random_agent(1);break;
-					case 1:agent(this,1);break;
+					case 1:agent(this,1,4.5);break;
 					}
-					switch(Jack){
+					switch(jack_agent){
 					case 0:random_agent(2);break;
-					case 1:agent(this,2);break;
+					case 1:agent(this,2,4.5);break;
 					}
-					switch(Investigator){
+					switch(investigator_agent){
 					case 0:random_agent(1);break;
-					case 1:agent(this,1);break;
+					case 1:agent(this,1,4.5);break;
 					}
 				}
-				round_done();
+				if(round_done(Inv,Jack)){return;}
 			}
 		}
 	}
-	public void round_done() {
+	public boolean round_done(WinRate Inv,WinRate Jack) {
 		myButton [] jesus = new myButton [9];
 		int [] bible = new int [9];
 		for(int i = 0 ;i  < 9; i ++){
@@ -835,8 +836,8 @@ public class JackGUI implements ActionListener, Cloneable {
 				continue;
 			}
 		}
-		System.out.printf("in round_done\n");
-		for(int i = 0; i < 9;i++)System.out.printf("%d 's angle :%d\n",jesus[i].character,jesus[i].angle);
+		//System.out.printf("in round_done\n");
+		//for(int i = 0; i < 9;i++)System.out.printf("%d 's angle :%d\n",jesus[i].character,jesus[i].angle);
 		if (round % 2 == 1) {
 			for (int i = 0; i < 4; i++) {
 				if (action_used[i] == true) {
@@ -1363,7 +1364,7 @@ public class JackGUI implements ActionListener, Cloneable {
 		boolean jack_seen = false;
 		for (int i = 0; i < 9; i++) {
 			if (jack == jesus[i].character) {
-				System.out.printf("found jack: \njack is %d\nseen[%d]\n",jack,i);
+				//System.out.printf("found jack: \njack is %d\nseen[%d]\n",jack,i);
 				if (seen[i])
 					jack_seen = true;
 				else
@@ -1392,22 +1393,38 @@ public class JackGUI implements ActionListener, Cloneable {
 		}
 		//determine who wins
 		if(gameover == 1 && score >= 6&& !jack_seen&& round==9){
+			Jack.Win();
+			Inv.lose();
 			System.out.printf("Jack has endured, Jack wins\n");
+			return true;
 		}
 		else if(gameover == 1 && score >= 6&& jack_seen){
+			Inv.Win();
+			Jack.lose();
 			System.out.printf("Though the score, Jack's seen\nHolmes wins\n");
+			return true;
 		}
 		else if(gameover == 1 ){
+			Inv.Win();
+			Jack.lose();
 			System.out.printf("all are dead\nHolmes wins\n");
+			return true;
 		}
 		else if(score == 6){
+			Jack.Win();
+			Inv.lose();
 			System.out.printf("Jack's got 6 hourglasses\nJack wins\n");
+			return true;
 		}
 		else if(round == 9){
+			Jack.Win();
+			Inv.lose();
 			System.out.printf("Jack wins\n");
+			return true;
 		}
 		exchange = rotate = steps = 0;
 		//System.out.printf("fuck me\n");
+		return false; //not finish
 	}
 
 	public int num_seen() {
@@ -1924,26 +1941,18 @@ public class JackGUI implements ActionListener, Cloneable {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		WinRate Inv = new WinRate(),Jack = new WinRate();
 		JackGUI gui = new JackGUI();
-		gui.onCreate();
-		/*
-		 * int round = 1,score = 0; int act_num = 1; Random rand = new Random();
-		 */
-		//int jack = rand.nextInt(9)+1;
-		gui.jackid.setText("jack is ");
-		//System.out.printf("%d\n", gui.jack);
-		gui.displayJack.setDisabledIcon(new ImageIcon(("res/" + gui.jack + "_0.png")));
-		/*
-		 * for(int i=0;i<4;i++){ int a=rand.nextInt(2); if(a == 0){
-		 * action_used[i] = true; gui.actions[i].setEnabled(true);
-		 * gui.actions[i+4].setEnabled(false); } else{ action_used[i] = false;
-		 * gui.actions[i].setEnabled(false); gui.actions[i+4].setEnabled(true);
-		 * } }
-		 */
-
-		//System.out.printf("%d\n", gui.people[2].character);
-		//gui.people[2].setDead();
-
-		// System.out.printf("%d\n", d.get_deg());
+		for(int i=0;i<100;i++){
+			gui.onCreate();
+			gui.jackid.setText("jack is ");
+			gui.game_start(Inv,Jack);
+			
+		}
+		Integer percent = ((Double)(Jack.get_winrate() * 100)).intValue();
+		System.out.printf("Jack's winrate : %d%%\n",percent);
+		percent =((Double)(Inv.get_winrate() * 100)).intValue();
+		System.out.printf("Investigator's winrate : %d%%\n",percent);
+		//gui.test_agent();
 	}
 }
