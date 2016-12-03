@@ -9,18 +9,14 @@ import java.util.List;
 import java.util.Stack;
 
 
-public class JackGUI implements ActionListener, Cloneable {
-	class myButton extends JButton implements Cloneable{
+public class JackGUI implements ActionListener{
+	class myButton extends JButton {
 
 		boolean IsPeople = false, IsDead = false;
 		int gridx, gridy, character, angle = 0;
 		private static final long serialVersionUID = 1838929864725400980L;
 		public myButton(ImageIcon imageIcon) {
 			super(imageIcon);
-		}
-		@Override
-		public Object clone() throws CloneNotSupportedException {
-			return super.clone();
 		}
 		public void setxy(int x, int y) {
 			gridx = x;
@@ -74,17 +70,6 @@ public class JackGUI implements ActionListener, Cloneable {
 
 	public JackGUI() {
 
-	}
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		JackGUI clone = (JackGUI) super.clone();
-		clone.people = this.people.clone();
-		clone.actions = this.actions.clone();
-		clone.Holmes = (myButton) this.Holmes.clone();
-		clone.Watson = (myButton) this.Watson.clone();
-		clone.dog = (myButton) this.dog.clone();
-
-		return clone;
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -247,7 +232,16 @@ public class JackGUI implements ActionListener, Cloneable {
 			}
 		}
 	}
-
+	public void invisible_Swap(myButton x, myButton y) {
+		// v = x;
+		int t = x.gridx, v = x.gridy;
+		//x = y;
+		x.gridx = y.gridx;
+		x.gridy = y.gridy;
+		// y = v;
+		y.gridx = t;
+		y.gridy = v;
+	}
 	public void Swap(myButton x, myButton y) {
 		cons.gridx = x.gridx;
 		cons.gridy = x.gridy;
@@ -263,7 +257,12 @@ public class JackGUI implements ActionListener, Cloneable {
 		mainwindow.revalidate();
 		mainwindow.repaint();
 	}
-
+	public void invisible_Spin(myButton action, myButton p, int angle) {
+		// if(action.isEnabled()) // //comment for test
+		{
+			p.setAngle(angle);
+		}
+	}
 	public void Spin(myButton action, myButton p, int angle) {
 		// if(action.isEnabled()) // //comment for test
 		{
@@ -283,7 +282,19 @@ public class JackGUI implements ActionListener, Cloneable {
 			mainwindow.repaint();
 		}
 	}
-
+	public void invisible_Move(myButton action, myButton sel, int _steps) {
+		// if (action.isEnabled()) // comment for extension in the future
+		// Doesn't check steps for action limit.
+		myButton p = action == actions[0] ? Watson
+				: action == actions[3] ? Holmes : action == actions[4] ? dog : action == actions[5] ? sel : null;
+		if (p == null)
+			return;
+		{
+			for (int i = 0; i < _steps; i++) {
+				this.movepos(p);
+			}
+		}
+	}
 	public void Move(myButton action, myButton sel, int _steps) {
 		// if (action.isEnabled()) // comment for extension in the future
 		// Doesn't check steps for action limit.
@@ -414,12 +425,11 @@ public class JackGUI implements ActionListener, Cloneable {
 				}
 			}
 			refresh_score();
-			refresh_score();
 			break;
 		}
 	}
 
-	public void inv_agent(JackGUI gui,Double avg) {
+	public void inv_agent(Double avg) {
 		int H = -1;
 		//select the highest priority action.
 		for (int j = 0; j < 8; j++) {
@@ -432,110 +442,162 @@ public class JackGUI implements ActionListener, Cloneable {
 		}
 		actions[H].setEnabled(false);
 		//judge the most suitable result
-		JackGUI g =null;
-		try {
-			g = (JackGUI) gui.clone();
-		} catch (CloneNotSupportedException e) {
-			
-			e.printStackTrace();
-		}
 		Double dead = 0.0;
+		int ori_x,ori_y;
 		switch (H) {
 		case 0:
-			g.Move(g.actions[0], null, 1);
-			dead = (double)g.num_seen();
-			g.Move(g.actions[0], null, 2);
+			ori_x = Watson.gridx;
+			ori_y = Watson.gridy;
+			invisible_Move(actions[0], null, 1);
+			dead = (double)num_seen();
+			invisible_Move(actions[0], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
+			//current is better
+			if (Math.abs(dead - avg) < Math.abs(num_seen() - avg)){
+				Watson.setxy(ori_x, ori_y);
 				Move(actions[0], null, 1);
-			else
+				//System.out.printf("Watson move 1 steps\n");
+			}
+			else{
+				Holmes.setxy(ori_x, ori_y);
 				Move(actions[0], null, 2);
+				//System.out.printf("Watson move 2 steps\n");
+			}
+			
 			break;
 		case 1:case 2:
 			int s = 0,a=0;
+			int[] origin_angle = new int[9];
+			//save origin state.
+			for(int i=0;i<9;i++){
+				origin_angle[i] = people[i].angle;
+			}
+			//decide the best situation.
+			dead = 10.0;//the worst
 			for (int p = 0; p < 9; p++) {
 				for(int pi = 0 ; pi < 360;pi += 90){
-					g.Spin(g.actions[1], g.people[p], pi);
-					if(Math.abs(dead - avg) < Math.abs(g.num_seen() - avg)) {
+					if(origin_angle[p] == pi) continue;
+					invisible_Spin(actions[1], people[p], pi);
+					//current is worse.
+					int t = num_seen();
+					if(Math.abs(dead - avg) > Math.abs(t - avg)) {
+						dead = (double)t ;
 						s = p;
 						a = pi;
 					}
-					else {
-						dead = (double)g.num_seen() ;
-					}
 				}
 			}
+			//reverse origin state;
+			for(int i=0;i<9;i++){
+				people[i].setAngle(origin_angle[i]); 
+			}
 			Spin(actions[1],people[s],a);
+			//System.out.printf("people[%d] rotate %d\n",s,a);
 			break;
 		case 3:
-			g.Move(g.actions[3], null, 1);
-			dead = (double)g.num_seen();
-			g.Move(g.actions[3], null, 2);
+			ori_x = Holmes.gridx;
+			ori_y = Holmes.gridy;
+			invisible_Move(actions[3], null, 1);
+			dead = (double)num_seen();
+			invisible_Move(actions[3], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
+			if (Math.abs(dead - avg) < Math.abs(num_seen() - avg)){
+				Holmes.setxy(ori_x, ori_y);
 				Move(actions[3], null, 1);
-			else
+				//System.out.printf("Holmes move 1 steps\n");
+			}
+			else{
+				Holmes.setxy(ori_x, ori_y);
 				Move(actions[3], null, 2);
+				//System.out.printf("Holmes move 2 steps\n");
+			}
 			break;
 		case 4:
-			g.Move(g.actions[4], null, 1);
-			dead = (double)g.num_seen();
-			g.Move(g.actions[4], null, 2);
+			ori_x = dog.gridx;
+			ori_y = dog.gridy;
+			invisible_Move(actions[4], null, 1);
+			dead = (double)num_seen();
+			invisible_Move(actions[4], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead - avg) < Math.abs(g.num_seen() - avg))
+			if (Math.abs(dead - avg) < Math.abs(num_seen() - avg)){
+				dog.setxy(ori_x, ori_y);
 				Move(actions[4], null, 1);
-			else
+				//System.out.printf("dog move 1 steps\n");
+			}
+			else{
+				dog.setxy(ori_x, ori_y);
 				Move(actions[4], null, 2);
+				//System.out.printf("dog move 2 steps\n");
+			}
 			break;
 		case 5:
 			myButton p =null;
 			int sp=0;
 			double t;
-			dead = (double) g.num_seen();
-			g.Move(g.actions[5], g.Holmes, 1);
-			t = g.num_seen();
+			//zero step
+			dead = (double) num_seen();
+			//Holmes's phase
+			ori_x = Holmes.gridx;
+			ori_y = Holmes.gridy;
+			invisible_Move(actions[5], Holmes, 1);
+			t = num_seen();
 			if (Math.abs(dead - avg) < Math.abs(t - avg)){
 				dead = (double)t;
 				p = Holmes;
 				sp = 1;
 			}
-			g.Move(g.actions[5], g.Watson, 1);
-			t = g.num_seen();
+			//reset
+			Holmes.setxy(ori_x, ori_y);
+			//Watson's phase
+			ori_x = Watson.gridx;
+			ori_y = Watson.gridy;
+			invisible_Move(actions[5], Watson, 1);
+			t = num_seen();
 			if (Math.abs(dead - avg) < Math.abs(t - avg)){
 				dead = (double)t;
 				p = Watson;
 				sp = 1;
 			}
-			g.Move(g.actions[5], g.dog, 1);
-			t = g.num_seen();
+			//reset
+			Watson.setxy(ori_x, ori_y);
+			//Dog's phase
+			ori_x = dog.gridx;
+			ori_y = dog.gridy;
+			invisible_Move(actions[5], dog, 1);
+			t = num_seen();
 			if (Math.abs(dead - avg) < Math.abs(t - avg)){
 				dead = (double)t;
 				p = dog;
 				sp = 1;
 			}
+			//reset
+			dog.setxy(ori_x, ori_y);
+			//actually do action. 
 			if(sp > 0)
 				Move(actions[5],p,sp);
+			//System.out.printf("act 5 move %d steps\n",sp);
 			break;
 		case 6:
 			dead =0.0;
 			int t1 = 0,t2 = 1;
 			for(int y=0;y<9;y++){
 				for(int x =y+1;x<9;x++){
-					if(x!=y){
-						g.Swap(g.people[x],people[y]);
-						t = g.num_seen();
-						if (Math.abs(dead - avg) < Math.abs(t - avg)){
-							dead = (double)t;
-							t1 =x;
-							t2 =y;
-						}
+					invisible_Swap(people[x],people[y]);
+					t = num_seen();
+					if (Math.abs(dead - avg) < Math.abs(t - avg)){
+						dead = (double)t;
+						t1 =x;
+						t2 =y;
 					}
+					//reset 
+					invisible_Swap(people[x],people[y]);		
 				}
 			}
 			Swap(people[t1],people[t2]);
+			//System.out.printf("%d <-> %d\n",t1,t2);
 			break;
 		case 7:
 			myButton b = card.pop();
@@ -576,7 +638,6 @@ public class JackGUI implements ActionListener, Cloneable {
 					if(!b.IsDead)b.setDead();
 				}
 			}
-			refresh_score();
 			refresh_score();
 			break;
 		}
@@ -623,7 +684,7 @@ public class JackGUI implements ActionListener, Cloneable {
 	}
 
 	public void onCreate() {
-		mainwindow.setSize(800, 800);
+		mainwindow.setSize(800, 900);
 		mainwindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainwindow.getContentPane().setLayout(new GridBagLayout());
 		Random rand = new Random();
@@ -750,29 +811,29 @@ public class JackGUI implements ActionListener, Cloneable {
 	}
 	public void test_agent(int millis){
 		Delay(millis);
-		inv_agent(this,4.5);
+		inv_agent(4.5);
 		Delay(millis);
-		inv_agent(this,4.5);
+		inv_agent(4.5);
 		Delay(millis);
-		inv_agent(this,4.5);
+		inv_agent(4.5);
 		Delay(millis);
-		inv_agent(this,4.5);
+		inv_agent(4.5);
 		Delay(millis);
 	}
 	
 	public void game_start(int millis,WinRate Inv,WinRate Jack){
 		int jack_agent =0,investigator_agent = 1;
-		Double avg = 4.0,min = 1.0,max = 9.0;
+		Double avg = 4.0,min = 1.0;
 		//0 for random agent ;
 		//1 for base agent;
-		for(round = 1;round <= 8;round++){
+		while(round!=9){
 			//System.out.printf("Round:%d\n",round);
 			refresh_round();
 			if(round % 2 == 0){
 				Delay(millis);
 				switch(jack_agent){
 				case 0:random_agent();break;
-				case 1:inv_agent(this,min);break;
+				case 1:inv_agent(min);break;
 				}
 				Delay(millis);
 				switch(investigator_agent){
@@ -780,21 +841,21 @@ public class JackGUI implements ActionListener, Cloneable {
 				case 0:random_agent();break;
 
 				case 1:
-					inv_agent(this,avg);
-					inv_agent(this,avg);
+					inv_agent(avg);
+					inv_agent(avg);
 					break;
 				}
 				Delay(millis);
 				switch(jack_agent){
 				case 0:random_agent();break;
-				case 1:inv_agent(this,min);break;
+				case 1:inv_agent(min);break;
 				}
 			}
 			else {
 				Delay(millis);
 				switch(investigator_agent){
 				case 0:random_agent();break;
-				case 1:inv_agent(this,avg);break;
+				case 1:inv_agent(avg);break;
 				}
 				Delay(millis);
 				switch(jack_agent){
@@ -803,13 +864,13 @@ public class JackGUI implements ActionListener, Cloneable {
 					random_agent();
 					break;
 				case 1:
-					inv_agent(this,min);
-					inv_agent(this,min);break;
+					inv_agent(min);
+					inv_agent(min);break;
 				}
 				Delay(millis);
 				switch(investigator_agent){
 				case 0:random_agent();break;
-				case 1:inv_agent(this,avg);break;
+				case 1:inv_agent(avg);break;
 				}
 			}
 			Delay(millis);
@@ -1422,6 +1483,9 @@ public class JackGUI implements ActionListener, Cloneable {
 			}
 		}
 		//determine who wins
+		refresh_round();
+		refresh_score();
+		exchange = rotate = steps = 0;
 		if(gameover == 1 && score >= 6&& !jack_seen&& round==9){
 			Jack.Win();
 			Inv.lose();
@@ -1452,7 +1516,6 @@ public class JackGUI implements ActionListener, Cloneable {
 			System.out.printf("Jack wins\n");
 			return true;
 		}
-		exchange = rotate = steps = 0;
 		//System.out.printf("fuck me\n");
 		return false; //not finish
 	}
@@ -1974,10 +2037,10 @@ public class JackGUI implements ActionListener, Cloneable {
 		WinRate Inv = new WinRate(),Jack = new WinRate();
 		JackGUI gui = new JackGUI();
 		
-		for(int i=0;i<1;i++){
+		for(int i=0;i<100;i++){
 			gui.onCreate();
 			gui.jackid.setText("jack is ");
-			gui.game_start(1000,Inv,Jack);
+			gui.game_start(0,Inv,Jack);
 			//gui.test_agent(1000);
 		}
 		Integer percent = ((Double)(Jack.get_winrate() * 100)).intValue();
