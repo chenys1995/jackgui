@@ -1,5 +1,6 @@
 package jackgui;
 
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -43,7 +44,7 @@ public class TableGame extends JackGUI {
 		else if (act == actions[5])
 			return 3;
 		else if (act == actions[7])
-			return 2;
+			return 1;
 		else
 			return 0;
 	}
@@ -597,7 +598,7 @@ public class TableGame extends JackGUI {
 	}
 	
 	public void game_start(int millis,WinRate Inv,WinRate Jack){
-		int jack_agent =0,investigator_agent = 1;
+		int jack_agent =1,investigator_agent = 1;
 		Double avg = 4.0;
 		//0 for random agent ;
 		//1 for base agent;
@@ -657,16 +658,16 @@ public class TableGame extends JackGUI {
 	
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		Boolean visible = false; 
 		WinRate Inv = new WinRate(),Jack = new WinRate();
 		//*
-		for(int i=0;i<100;i++){
+		for(int i=0;i<5000;i++){
 			TableGame gui = new TableGame();
-			gui.onCreate();
+			gui.onCreate(visible);
 			gui.jackid.setText("jack is ");
-			gui.game_start(0,Inv,Jack);
+			gui.game_start(0,Inv,Jack);//delay control: 0 ms
 			//gui.test_agent(1000);
-			System.out.printf("Restart\n");
+			
 		}//*/
 
 		Integer percent = ((Double)(Jack.get_winrate() * 100)).intValue();

@@ -1,8 +1,8 @@
 package jackgui;
 
 public class WinRate {
-	int win,lose;
-	Double winrate;
+	private int win,lose;
+	private Double winrate;
 	public WinRate(){
 		win = 0;
 		lose = 0;

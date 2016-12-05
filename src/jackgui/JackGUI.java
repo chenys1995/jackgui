@@ -324,7 +324,7 @@ public class JackGUI implements ActionListener{
 		}
 	}
 
-	public void onCreate() {
+	public void onCreate(Boolean visible) {
 		Random rand = new Random();
 		List<Integer> order = new ArrayList<Integer>(), angle = new ArrayList<Integer>();
 		for (int i = 0; i < 9; i++) {
@@ -416,7 +416,7 @@ public class JackGUI implements ActionListener{
 		Watson.setEnabled(false);
 		dog.setEnabled(false);
 		ok.setEnabled(false);
-		mainwindow.setVisible(true);
+		mainwindow.setVisible(visible);
 		for (int i = 0; i < 4; i++) {
 			int a = rand.nextInt(2);
 			if (a == 0) {
