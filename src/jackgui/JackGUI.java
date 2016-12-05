@@ -10,7 +10,7 @@ import java.util.Stack;
 
 
 public class JackGUI implements ActionListener{
-	protected static JFrame mainwindow = new JFrame();
+	protected JFrame mainwindow = new JFrame();
 	myButton[] people = new myButton[9];
 	myButton[] actions = new myButton[8];
 	myButton Holmes = new myButton(new ImageIcon("res/Holmes.png"));
@@ -31,7 +31,17 @@ public class JackGUI implements ActionListener{
 	int rotate, exchange, steps;
 
 	public JackGUI() {
-
+		mainwindow.setSize(800, 900);
+		mainwindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainwindow.getContentPane().setLayout(new GridBagLayout());
+		round = 1;
+		move = 1;
+		score = 0;
+		people = new myButton[9];
+		actions = new myButton[8];
+		Holmes = new myButton(new ImageIcon("res/Holmes.png"));
+		Watson = new myButton(new ImageIcon("res/Watson.png"));
+		dog = new myButton(new ImageIcon("res/dog.png"));
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -315,14 +325,7 @@ public class JackGUI implements ActionListener{
 	}
 
 	public void onCreate() {
-		mainwindow.setSize(800, 900);
-		mainwindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainwindow.getContentPane().setLayout(new GridBagLayout());
 		Random rand = new Random();
-		round = 1;
-		move = 1;
-		score = 0;
-
 		List<Integer> order = new ArrayList<Integer>(), angle = new ArrayList<Integer>();
 		for (int i = 0; i < 9; i++) {
 			order.add(i);
@@ -431,7 +434,8 @@ public class JackGUI implements ActionListener{
 		}
 		jack = card.pop().character;
 		
-		
+		mainwindow.revalidate();
+		mainwindow.repaint();
 	}
 	public void Delay(int millis){
 		try {
