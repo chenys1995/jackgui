@@ -1,6 +1,5 @@
 package jackgui;
 
-import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -394,7 +393,7 @@ public class TableGame extends JackGUI {
 				//System.out.printf("Watson move 1 steps\n");
 			}
 			else{
-				Holmes.setxy(ori_x, ori_y);
+				Watson.setxy(ori_x, ori_y);
 				Move(actions[0], null, 2);
 				//System.out.printf("Watson move 2 steps\n");
 			}
@@ -658,14 +657,14 @@ public class TableGame extends JackGUI {
 	
 
 	public static void main(String[] args) {
-		Boolean visible = false; 
 		WinRate Inv = new WinRate(),Jack = new WinRate();
+		int times = 10000;
 		//*
-		for(int i=0;i<5000;i++){
+		for(int count=0;count<times;count++){
 			TableGame gui = new TableGame();
-			gui.onCreate(visible);
+			gui.onCreate(TableGame.invisible);
 			gui.jackid.setText("jack is ");
-			gui.game_start(0,Inv,Jack);//delay control: 0 ms
+			gui.game_start(TableGame.no_delay,Inv,Jack);//delay control: 0 ms
 			//gui.test_agent(1000);
 			
 		}//*/

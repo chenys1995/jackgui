@@ -10,6 +10,10 @@ import java.util.Stack;
 
 
 public class JackGUI implements ActionListener{
+	public final static boolean visible = true;
+	public final static boolean invisible = false;
+	public final static int interval = 1000;
+	public final static int no_delay = 0;
 	protected JFrame mainwindow = new JFrame();
 	myButton[] people = new myButton[9];
 	myButton[] actions = new myButton[8];
