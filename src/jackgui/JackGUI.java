@@ -545,7 +545,7 @@ public class JackGUI implements ActionListener{
 		}
 		//up
 		else if (dog.gridx == 1 && dog.gridy == 0) {
-			if (people[0].angle == 180)
+			if (jesus[0].angle == 180)
 				;
 			else if (jesus[0].angle == 0 || jesus[3].angle == 180) {
 				seen[0] = true;
@@ -849,7 +849,7 @@ public class JackGUI implements ActionListener{
 		} else if (Watson.gridx == 0 && Watson.gridy == 2) {
 			if (jesus[3].angle == 90)
 				;
-			else if (people[3].angle == 270 || jesus[4].angle == 90) {
+			else if (jesus[3].angle == 270 || jesus[4].angle == 90) {
 				seen[3] = true;
 			} else if (jesus[4].angle == 270 || jesus[5].angle == 90) {
 				seen[3] = true;
@@ -987,7 +987,7 @@ public class JackGUI implements ActionListener{
 				;
 			else if (jesus[8].angle == 180 || jesus[5].angle == 0) {
 				seen[8] = true;
-			} else if (jesus[5].angle == 180 || people[2].angle == 0) {
+			} else if (jesus[5].angle == 180 || jesus[2].angle == 0) {
 				seen[8] = true;
 				seen[5] = true;
 			} else {
@@ -1128,7 +1128,7 @@ public class JackGUI implements ActionListener{
 		}
 		//up
 		else if (dog.gridx == 1 && dog.gridy == 0) {
-			if (people[0].angle == 180)
+			if (jesus[0].angle == 180)
 				;
 			else if (jesus[0].angle == 0 || jesus[3].angle == 180) {
 				seen[0] = true;
@@ -1432,7 +1432,7 @@ public class JackGUI implements ActionListener{
 		} else if (Watson.gridx == 0 && Watson.gridy == 2) {
 			if (jesus[3].angle == 90)
 				;
-			else if (people[3].angle == 270 || jesus[4].angle == 90) {
+			else if (jesus[3].angle == 270 || jesus[4].angle == 90) {
 				seen[3] = true;
 			} else if (jesus[4].angle == 270 || jesus[5].angle == 90) {
 				seen[3] = true;
@@ -1570,7 +1570,7 @@ public class JackGUI implements ActionListener{
 				;
 			else if (jesus[8].angle == 180 || jesus[5].angle == 0) {
 				seen[8] = true;
-			} else if (jesus[5].angle == 180 || people[2].angle == 0) {
+			} else if (jesus[5].angle == 180 || jesus[2].angle == 0) {
 				seen[8] = true;
 				seen[5] = true;
 			} else {
@@ -1751,7 +1751,7 @@ public class JackGUI implements ActionListener{
 		}
 		//up
 		else if (dog.gridx == 1 && dog.gridy == 0) {
-			if (people[0].angle == 180)
+			if (jesus[0].angle == 180)
 				;
 			else if (jesus[0].angle == 0 || jesus[3].angle == 180) {
 				seen[0] = true;
@@ -2055,7 +2055,7 @@ public class JackGUI implements ActionListener{
 		} else if (Watson.gridx == 0 && Watson.gridy == 2) {
 			if (jesus[3].angle == 90)
 				;
-			else if (people[3].angle == 270 || jesus[4].angle == 90) {
+			else if (jesus[3].angle == 270 || jesus[4].angle == 90) {
 				seen[3] = true;
 			} else if (jesus[4].angle == 270 || jesus[5].angle == 90) {
 				seen[3] = true;
@@ -2193,7 +2193,7 @@ public class JackGUI implements ActionListener{
 				;
 			else if (jesus[8].angle == 180 || jesus[5].angle == 0) {
 				seen[8] = true;
-			} else if (jesus[5].angle == 180 || people[2].angle == 0) {
+			} else if (jesus[5].angle == 180 || jesus[2].angle == 0) {
 				seen[8] = true;
 				seen[5] = true;
 			} else {
@@ -2210,6 +2210,12 @@ public class JackGUI implements ActionListener{
 		}
 		return result;
 	}
-
+	public int num_living(){
+		int result = 0; 
+		for(int i = 0; i < 9; i++){
+			if(!people[i].IsDead)result++;
+		}
+		return result;
+	}
 	
 }

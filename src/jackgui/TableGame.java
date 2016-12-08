@@ -676,5 +676,282 @@ public class TableGame extends JackGUI {
 		//gui.test_agent();
 		return;
 	}
+	public boolean [] seen_after_move(int act, int step,int which){
+		//try to implement which will be seen after one of the investigators moves
+		boolean[] result;
+		result = new boolean[9];
+		for(int i = 0; i < 9; i++)result[i]=false;
+		if(act == 0){//watson
+			
+		}
+		else if(act == 3){//holmes
+			
+		}
+		else if(act == 4){//dog
+			
+		}
+		else if(act == 5){//joker
+			if(which==1){//watson
+				
+			}
+			else if(which == 2){//holmes
+				
+			}
+			else if(which == 3){//dog
+				
+			}
+			else  System.out.printf("in seen_after_move, parameter which is wrong : %d\n", which);
+		}
+		else System.out.printf("in seen_after_move, parameter act is wrong : %d\n", act);
+		return result;
+	}
+	public boolean[] seen_if_such(int[] inv_pos){
+		//who will be seen if investigators are arranged with these positions
+		/*
+		inv_pos:
+		    0 1 2
+		11x  x x 3    
+		10x  x x 4
+		 9 x  x x 5
+		    8 7 6
+		 */
+		if(inv_pos.length>3)
+			System.out.printf("in seen_if_such, parameter inv_pos length is wrong : %d\n", inv_pos.length);
+		myButton [] jesus = new myButton [9];
+		int [] bible = new int [9];
+		for(int i = 0 ;i  < 9; i ++){
+			if(people[i].gridx == 1 && people[i].gridy == 1){
+				jesus[0] =people[i] ;
+				bible[0] = i;
+				continue;
+			}
+			else if(people[i].gridx == 2 && people[i].gridy == 1){
+				jesus[1] =people[i] ;
+				bible[1] = i;
+				continue;
+			}
+			else if(people[i].gridx == 3 && people[i].gridy == 1){
+				jesus[2] =people[i] ;
+				bible[2] = i;
+				continue;
+			}
+			else if(people[i].gridx == 1 && people[i].gridy == 2){
+				jesus[3] =people[i] ;
+				bible[3] = i;
+				continue;
+			}
+			else if(people[i].gridx == 2 && people[i].gridy == 2){
+				jesus[4] =people[i] ;
+				bible[4] = i;
+				continue;
+			}
+			else if(people[i].gridx == 3 && people[i].gridy == 2){
+				jesus[5] =people[i] ;
+				bible[5] = i;
+				continue;
+			}
+			else if(people[i].gridx == 1 && people[i].gridy == 3){
+				jesus[6] =people[i] ;
+				bible[6] = i;
+				continue;
+			}
+			else if(people[i].gridx == 2 && people[i].gridy == 3){
+				jesus[7] =people[i] ;
+				bible[7] = i;
+				continue;
+			}
+			else if(people[i].gridx == 3 && people[i].gridy == 3){
+				jesus[8] =people[i] ;
+				bible[8] = i;
+				continue;
+			}
+		}
+		boolean seen[] = new boolean[9];
+		for (int i = 0; i < 9; i++)
+			seen[i] = false;
+		
+		for(int i = 0; i < inv_pos.length; i++){
+			switch(inv_pos[i]){
+				case (0):
+					if (jesus[0].angle == 180)
+						;
+					else if (jesus[0].angle == 0 || jesus[3].angle == 180) {
+						seen[0] = true;
+					} else if (jesus[3].angle == 0 || jesus[6].angle == 180) {
+						seen[0] = true;
+						seen[3] = true;
+					} else {
+						seen[0] = true;
+						seen[3] = true;
+						seen[6] = true;
+					}
+					break;
+				case(1):
+					if (jesus[1].angle == 180)
+						;
+					else if (jesus[1].angle == 0 || jesus[4].angle == 180) {
+						seen[1] = true;
+					} else if (jesus[4].angle == 0 || jesus[7].angle == 180) {
+						seen[1] = true;
+						seen[4] = true;
+					} else {
+						seen[1] = true;
+						seen[4] = true;
+						seen[7] = true;
+					}
+					break;
+				case(2):
+					if (jesus[2].angle == 180)
+						;
+					else if (jesus[2].angle == 0 || jesus[5].angle == 180) {
+						seen[2] = true;
+					} else if (jesus[5].angle == 0 || jesus[8].angle == 180) {
+						seen[2] = true;
+						seen[5] = true;
+					} else {
+						seen[2] = true;
+						seen[5] = true;
+						seen[8] = true;
+					}
+					break;
+				case(3):
+					if (jesus[2].angle == 270)
+						;
+					else if (jesus[2].angle == 90 || jesus[1].angle == 270) {
+						seen[2] = true;
+					} else if (jesus[1].angle == 90 || jesus[0].angle == 270) {
+						seen[2] = true;
+						seen[1] = true;
+					} else {
+						seen[2] = true;
+						seen[1] = true;
+						seen[0] = true;
+					}
+					break;
+				case(4):
+					if (jesus[5].angle == 270)
+						;
+					else if (jesus[5].angle == 90 || jesus[4].angle == 270) {
+						seen[5] = true;
+					} else if (jesus[4].angle == 90 || jesus[3].angle == 270) {
+						seen[5] = true;
+						seen[4] = true;
+					} else {
+						seen[5] = true;
+						seen[4] = true;
+						seen[3] = true;
+					}
+					break;
+				case(5):
+					if (jesus[8].angle == 270)
+						;
+					else if (jesus[8].angle == 90 || jesus[7].angle == 270) {
+						seen[8] = true;
+					} else if (jesus[7].angle == 90 || jesus[6].angle == 270) {
+						seen[8] = true;
+						seen[7] = true;
+					} else {
+						seen[8] = true;
+						seen[7] = true;
+						seen[6] = true;
+					}
+					break;
+				case(6):
+					if (jesus[8].angle == 0)
+						;
+					else if (jesus[8].angle == 180 || jesus[5].angle == 0) {
+						seen[8] = true;
+					} else if (jesus[5].angle == 180 || jesus[2].angle == 0) {
+						seen[8] = true;
+						seen[5] = true;
+					} else {
+						seen[8] = true;
+						seen[5] = true;
+						seen[2] = true;
+					}
+					break;
+				case(7):
+					if (jesus[7].angle == 0)
+						;
+					else if (jesus[7].angle == 180 || jesus[4].angle == 0) {
+						seen[7] = true;
+					} else if (jesus[4].angle == 180 || jesus[1].angle == 0) {
+						seen[7] = true;
+						seen[4] = true;
+					} else {
+						seen[7] = true;
+						seen[4] = true;
+						seen[1] = true;
+					}
+					break;
+				case(8):
+					if (jesus[6].angle == 0)
+						;
+					else if (jesus[6].angle == 180 || jesus[3].angle == 0) {
+						seen[6] = true;
+					} else if (jesus[3].angle == 180 || jesus[0].angle == 0) {
+						seen[6] = true;
+						seen[3] = true;
+					} else {
+						seen[6] = true;
+						seen[3] = true;
+						seen[0] = true;
+					}
+					break;
+				case(9):
+					if (jesus[6].angle == 90)
+						;
+					else if (jesus[6].angle == 270 || jesus[7].angle == 90) {
+						seen[6] = true;
+					} else if (jesus[7].angle == 270 || jesus[8].angle == 90) {
+						seen[6] = true;
+						seen[7] = true;
+					} else {
+						seen[6] = true;
+						seen[7] = true;
+						seen[8] = true;
+					}
+					break;
+				case(10):
+					if (jesus[3].angle == 90)
+						;
+					else if (jesus[3].angle == 270 || jesus[4].angle == 90) {
+						seen[3] = true;
+					} else if (jesus[4].angle == 270 || jesus[5].angle == 90) {
+						seen[3] = true;
+						seen[4] = true;
+					} else {
+						seen[3] = true;
+						seen[4] = true;
+						seen[5] = true;
+					}
+					break;
+				case(11):
+					if (jesus[0].angle == 90)
+						;
+					else if (jesus[0].angle == 270 || jesus[1].angle == 90) {
+						seen[0] = true;
+					} else if (jesus[1].angle == 270 || jesus[2].angle == 90) {
+						seen[0] = true;
+						seen[1] = true;
+					} else {
+						seen[0] = true;
+						seen[1] = true;
+						seen[2] = true;
+					}
+					break;
+				default:System.out.printf("in seen_if_such, parameter inv_pos[%d] is wrong : %d\n", i,inv_pos[i]);
+			}
+		}
+		boolean[] result = new boolean[9];
+		
+		for(int i = 0; i < 9; i++){
+			if(seen[i]) result[bible[i]]=true;
+			else result[bible[i]]=false;
+		}
+		return result;
+	}
+	
+	
 
 }
