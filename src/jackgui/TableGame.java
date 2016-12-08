@@ -170,7 +170,7 @@ public class TableGame extends JackGUI {
 				//System.out.printf("Watson move 1 steps\n");
 			}
 			else{
-				Holmes.setxy(ori_x, ori_y);
+				Watson.setxy(ori_x, ori_y);
 				Move(actions[0], null, 2);
 				//System.out.printf("Watson move 2 steps\n");
 			}
@@ -597,7 +597,7 @@ public class TableGame extends JackGUI {
 	}
 	
 	public void game_start(int millis,WinRate Inv,WinRate Jack){
-		int jack_agent =1,investigator_agent = 1;
+		int jack_agent =0 ,investigator_agent = 1;
 		Double avg = 4.0;
 		//0 for random agent ;
 		//1 for base agent;
@@ -658,13 +658,15 @@ public class TableGame extends JackGUI {
 
 	public static void main(String[] args) {
 		WinRate Inv = new WinRate(),Jack = new WinRate();
-		int times = 10000;
+		int times = 1000;
 		//*
 		for(int count=0;count<times;count++){
 			TableGame gui = new TableGame();
+			//gui.onCreate(TableGame.visible);
 			gui.onCreate(TableGame.invisible);
 			gui.jackid.setText("jack is ");
-			gui.game_start(TableGame.no_delay,Inv,Jack);//delay control: 0 ms
+			gui.game_start(TableGame.no_delay,Inv,Jack);
+			//gui.game_start(TableGame.interval,Inv,Jack);
 			//gui.test_agent(1000);
 			
 		}//*/
