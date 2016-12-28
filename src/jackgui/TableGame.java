@@ -139,7 +139,8 @@ public class TableGame extends JackGUI {
 			break;
 		}
 	}
-	public void jack_agent() {
+	public Action_pack jack_agent() {
+		Action_pack sel = new Action_pack();
 		int H = -1;
 		//select the highest priority action.
 		for (int j = 0; j < 8; j++) {
@@ -151,33 +152,36 @@ public class TableGame extends JackGUI {
 			}
 		}
 		actions[H].setEnabled(false);
-		//judge the most suitable result
-		Double dead = 0.0;
-		int ori_x,ori_y;
+		//criteria 1
+		int not_seen = 0;
+		int ori_x,ori_y,cs;
 		switch (H) {
 		case 0:
 			ori_x = Watson.gridx;
 			ori_y = Watson.gridy;
 			invisible_Move(actions[0], null, 1);
-			dead = (double)num_seen();
+			not_seen =num_NotSeen_and_living();
 			invisible_Move(actions[0], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
 			//current is better
-			if (Math.abs(dead ) > Math.abs(num_seen() ))
+			if (num_NotSeen_and_living() > not_seen)
 			{
 				Watson.setxy(ori_x, ori_y);
-				Move(actions[0], null, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 1);
+				//Move(actions[0], null, 1);
 				//System.out.printf("Watson move 1 steps\n");
 			}
 			else{
 				Watson.setxy(ori_x, ori_y);
-				Move(actions[0], null, 2);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 2);
 				//System.out.printf("Watson move 2 steps\n");
 			}
 			
 			break;
-		case 1:case 2:
+		case 1:cs =1;
+		case 2:
+			cs =2;
 			int s = 0,a=0;
 			int[] origin_angle = new int[9];
 			//save origin state.
@@ -185,15 +189,15 @@ public class TableGame extends JackGUI {
 				origin_angle[i] = people[i].angle;
 			}
 			//decide the best situation.
-			dead = 10.0;//the worst
+			not_seen = 0;//the worst
 			for (int p = 0; p < 9; p++) {
 				for(int pi = 0 ; pi < 360;pi += 90){
 					if(origin_angle[p] == pi) continue;
 					invisible_Spin(actions[1], people[p], pi);
 					//current is worse.
-					int t = num_seen();
-					if(Math.abs(dead ) < Math.abs(t )) {
-						dead = (double)t ;
+					int t = num_NotSeen_and_living();
+					if(t > not_seen) {
+						not_seen = t;
 						s = p;
 						a = pi;
 					}
@@ -203,25 +207,28 @@ public class TableGame extends JackGUI {
 			for(int i=0;i<9;i++){
 				people[i].setAngle(origin_angle[i]); 
 			}
-			Spin(actions[1],people[s],a);
+			sel.setRotation(cs, s, a);
+			//Spin(actions[1],people[s],a);
 			//System.out.printf("people[%d] rotate %d\n",s,a);
 			break;
 		case 3:
 			ori_x = Holmes.gridx;
 			ori_y = Holmes.gridy;
 			invisible_Move(actions[3], null, 1);
-			dead = (double)num_seen();
+			not_seen = num_NotSeen_and_living();
 			invisible_Move(actions[3], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead ) > Math.abs(num_seen() )){
+			if (num_NotSeen_and_living() > not_seen){
 				Holmes.setxy(ori_x, ori_y);
-				Move(actions[3], null, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 1);
+				//Move(actions[3], null, 1);
 				//System.out.printf("Holmes move 1 steps\n");
 			}
 			else{
 				Holmes.setxy(ori_x, ori_y);
-				Move(actions[3], null, 2);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 2);
+				//Move(actions[3], null, 2);
 				//System.out.printf("Holmes move 2 steps\n");
 			}
 			break;
@@ -229,34 +236,36 @@ public class TableGame extends JackGUI {
 			ori_x = dog.gridx;
 			ori_y = dog.gridy;
 			invisible_Move(actions[4], null, 1);
-			dead = (double)num_seen();
+			not_seen = num_NotSeen_and_living();
 			invisible_Move(actions[4], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead ) > Math.abs(num_seen() )){
+			if (num_NotSeen_and_living() > not_seen){
 				dog.setxy(ori_x, ori_y);
-				Move(actions[4], null, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 1);
+				//Move(actions[4], null, 1);
 				//System.out.printf("dog move 1 steps\n");
 			}
 			else{
 				dog.setxy(ori_x, ori_y);
-				Move(actions[4], null, 2);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 2);
+				//Move(actions[4], null, 2);
 				//System.out.printf("dog move 2 steps\n");
 			}
 			break;
 		case 5:
 			myButton p =null;
 			int sp=0;
-			double t;
+			int t;
 			//zero step
-			dead = (double) num_seen();
+			not_seen = num_NotSeen_and_living();
 			//Holmes's phase
 			ori_x = Holmes.gridx;
 			ori_y = Holmes.gridy;
 			invisible_Move(actions[5], Holmes, 1);
-			t = num_seen();
-			if (Math.abs(dead ) > Math.abs(t )){
-				dead = (double)t;
+			t = num_NotSeen_and_living();
+			if (t > not_seen){
+				not_seen = t;
 				p = Holmes;
 				sp = 1;
 			}
@@ -266,9 +275,9 @@ public class TableGame extends JackGUI {
 			ori_x = Watson.gridx;
 			ori_y = Watson.gridy;
 			invisible_Move(actions[5], Watson, 1);
-			t = num_seen();
-			if (Math.abs(dead ) > Math.abs(t )){
-				dead = (double)t;
+			t = num_NotSeen_and_living();
+			if (t > not_seen){
+				not_seen = t;
 				p = Watson;
 				sp = 1;
 			}
@@ -278,28 +287,33 @@ public class TableGame extends JackGUI {
 			ori_x = dog.gridx;
 			ori_y = dog.gridy;
 			invisible_Move(actions[5], dog, 1);
-			t = num_seen();
-			if (Math.abs(dead ) > Math.abs(t )){
-				dead = (double)t;
+			t = num_NotSeen_and_living();
+			if (t > not_seen){
+				not_seen = t;
 				p = dog;
 				sp = 1;
 			}
 			//reset
 			dog.setxy(ori_x, ori_y);
 			//actually do action. 
-			if(sp > 0)
-				Move(actions[5],p,sp);
+			if(sp > 0){
+				int tmp =0;
+				if(p == Watson) tmp = Action_pack.Watson;
+				else if(p == dog) tmp = Action_pack.Dog;
+				sel.setInvMemMove(Action_pack.Tri, tmp, sp);
+				//Move(actions[5],p,sp);
+			}
 			//System.out.printf("act 5 move %d steps\n",sp);
 			break;
 		case 6:
-			dead =0.0;
+			not_seen =0;
 			int t1 = 0,t2 = 1;
 			for(int y=0;y<9;y++){
 				for(int x =y+1;x<9;x++){
 					invisible_Swap(people[x],people[y]);
-					t = num_seen();
-					if (Math.abs(dead ) > Math.abs(t )){
-						dead = (double)t;
+					t = num_NotSeen_and_living();
+					if (t > not_seen){
+						not_seen = t;
 						t1 =x;
 						t2 =y;
 					}
@@ -307,59 +321,15 @@ public class TableGame extends JackGUI {
 					invisible_Swap(people[x],people[y]);		
 				}
 			}
-			Swap(people[t1],people[t2]);
+			sel.setSwapCharacter(t1, t2);
+			//Swap(people[t1],people[t2]);
 			//System.out.printf("%d <-> %d\n",t1,t2);
 			break;
 		case 7:
-			myButton b = card.pop();
-			actions[7].setEnabled(false);
-			if(round % 2 == 0){
-				if(move == 1 || move == 4){
-					switch(b.character){
-					case 1:score += 2;break;
-					case 2:score += 0;break;
-					case 3:score += 1;break;
-					case 4:score += 0;break;
-					case 5:score += 1;break;
-					case 6:score += 1;break;
-					case 7:score += 1;break;
-					case 8:score += 1;break;
-					case 9:score += 1;break;
-					}
-				}
-				else {
-					if(!b.IsDead){
-						b.setDead();
-						mainwindow.revalidate();
-						mainwindow.repaint();
-					}
-				}
-			}
-			else {
-				if(move == 2 || move == 3){
-					switch(b.character){
-					case 1:score += 2;break;
-					case 2:score += 0;break;
-					case 3:score += 1;break;
-					case 4:score += 0;break;
-					case 5:score += 1;break;
-					case 6:score += 1;break;
-					case 7:score += 1;break;
-					case 8:score += 1;break;
-					case 9:score += 1;break;
-					}
-				}
-				else{
-					if(!b.IsDead){
-						b.setDead();
-						mainwindow.revalidate();
-						mainwindow.repaint();
-					}
-				}
-			}
-			refresh_score();
+			sel.setDraw();
 			break;
 		}
+		return sel;
 		//System.out.printf("dead: %f\n", dead);
 }
 	
@@ -565,6 +535,10 @@ public class TableGame extends JackGUI {
 		return sel;
 		//System.out.printf("dead: %f\n", dead);
 }
+	public void brute_inv_agent(int Remaining_action){
+		
+		
+	}
 	public void test_agent(int millis){
 		Delay(millis);
 		inv_agent();
@@ -686,6 +660,9 @@ public class TableGame extends JackGUI {
 		}
 		else System.out.printf("in seen_after_move, parameter act is wrong : %d\n", act);
 		return result;
+	}
+	public int num_NotSeen_and_living(){
+		return num_living()-num_seen_living();
 	}
 	public boolean[] seen_if_such(int[] inv_pos){
 		//who will be seen if investigators are arranged with these positions
