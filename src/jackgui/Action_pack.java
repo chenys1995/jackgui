@@ -4,7 +4,7 @@ public class Action_pack {
 	public static final int Holmes = 0,Watson = 1,Dog = 2; 
 	public static final int Moves = 0;
 	public static final int Swap = 1;
-	public static final int Rotate = 2;
+	public static final int Spin = 2;
 	public static final int Draw=3;
 	public static final int Tri =4; 
 	int cur_type,numOfAct,steps,c1,c2,angle,inv_team_member;
@@ -17,6 +17,36 @@ public class Action_pack {
 		inv_team_member = 0;
 		steps = 0;
 		angle = 0;
+	}
+	public void transform(final int index){
+		numOfAct = index;
+		switch(index){
+		case 0:
+			cur_type = Moves;
+			inv_team_member = Watson;
+			break;
+		case 1:cur_type = Spin;break;
+		case 2:
+			cur_type = Spin;
+			break;
+		case 3:
+			cur_type = Moves;
+			inv_team_member = Holmes;
+			break;
+		case 4:
+			cur_type = Moves;
+			inv_team_member = Dog;
+			break;
+		case 5:
+			cur_type = Tri;
+			break;
+		case 6:
+			cur_type = Swap;
+			break;
+		case 7:
+			cur_type = Draw;
+			break;
+		}
 	}
 	public void setInvMemMove(int ActType,int inv_team_member,int steps){
 		cur_type = ActType;
@@ -32,8 +62,8 @@ public class Action_pack {
 		this.inv_team_member = inv_team_member;
 		this.steps = steps;
 	}
-	public void setRotation(int num,int ch1,int angles){
-		cur_type = Rotate;
+	public void setSpin(int num,int ch1,int angles){
+		cur_type = Spin;
 		numOfAct = num;
 		c1 = ch1;
 		angle = angles;

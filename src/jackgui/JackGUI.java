@@ -2266,27 +2266,5 @@ public class JackGUI implements ActionListener{
 		}
 		return result;
 	}
-	public void exec(Action_pack act){
-		myButton p = null,ins = actions[act.numOfAct];
-		switch(act.inv_team_member){
-		case Action_pack.Holmes:
-			p = this.Holmes;break;
-		case Action_pack.Watson:
-			p = this.Watson;break;
-		case Action_pack.Dog: 
-			p = this.dog;break;
-		}
-		switch(act.cur_type){
-		case Action_pack.Moves:
-			Move(ins,p,act.steps);break;
-		case Action_pack.Swap:
-			Swap(people[act.c1],people[act.c2]);break;
-		case Action_pack.Rotate:
-			Spin(ins,people[act.c1],act.angle);break;
-		case Action_pack.Draw:
-			Draw();break;
-		case Action_pack.Tri:
-			Move(ins,p,act.steps);break;
-		}
-	}
+	
 }
