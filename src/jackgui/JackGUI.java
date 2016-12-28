@@ -12,7 +12,7 @@ import java.util.Stack;
 public class JackGUI implements ActionListener{
 	public final static boolean visible = true;
 	public final static boolean invisible = false;
-	public final static int interval = 2000;
+	public final static int interval = 4000;
 	public final static int no_delay = 0;
 	protected JFrame mainwindow = new JFrame();
 	myButton[] people = new myButton[9];
@@ -215,6 +215,55 @@ public class JackGUI implements ActionListener{
 				}
 			}
 		}
+	}
+	public void Draw(){
+		myButton b = card.pop();
+		actions[7].setEnabled(false);
+		if(round % 2 == 0){
+			if(move == 1 || move == 4){
+				switch(b.character){
+				case 1:score += 2;break;
+				case 2:score += 0;break;
+				case 3:score += 1;break;
+				case 4:score += 0;break;
+				case 5:score += 1;break;
+				case 6:score += 1;break;
+				case 7:score += 1;break;
+				case 8:score += 1;break;
+				case 9:score += 1;break;
+				}
+			}
+			else {
+				if(!b.IsDead){
+					b.setDead();
+					mainwindow.revalidate();
+					mainwindow.repaint();
+				}
+			}
+		}
+		else {
+			if(move == 2 || move == 3){
+				switch(b.character){
+				case 1:score += 2;break;
+				case 2:score += 0;break;
+				case 3:score += 1;break;
+				case 4:score += 0;break;
+				case 5:score += 1;break;
+				case 6:score += 1;break;
+				case 7:score += 1;break;
+				case 8:score += 1;break;
+				case 9:score += 1;break;
+				}
+			}
+			else{
+				if(!b.IsDead){
+					b.setDead();
+					mainwindow.revalidate();
+					mainwindow.repaint();
+				}
+			}
+		}
+		refresh_score();
 	}
 	public void Swap(myButton x, myButton y) {
 		cons.gridx = x.gridx;

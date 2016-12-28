@@ -91,7 +91,7 @@ public class TableGame extends JackGUI {
 		case 7:
 			myButton b = card.pop();
 			actions[7].setEnabled(false);
-			if(round % 2 == 0){
+			if(round % 2 == 1){
 				if(move == 1 || move == 4){
 					switch(b.character){
 					case 1:score += 2;break;
@@ -139,7 +139,7 @@ public class TableGame extends JackGUI {
 			break;
 		}
 	}
-	public void jack_agent(Double avg) {
+	public void jack_agent() {
 		int H = -1;
 		//select the highest priority action.
 		for (int j = 0; j < 8; j++) {
@@ -164,7 +164,8 @@ public class TableGame extends JackGUI {
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
 			//current is better
-			if (Math.abs(dead - avg) > Math.abs(num_seen() - avg)){
+			if (Math.abs(dead ) > Math.abs(num_seen() ))
+			{
 				Watson.setxy(ori_x, ori_y);
 				Move(actions[0], null, 1);
 				//System.out.printf("Watson move 1 steps\n");
@@ -191,7 +192,7 @@ public class TableGame extends JackGUI {
 					invisible_Spin(actions[1], people[p], pi);
 					//current is worse.
 					int t = num_seen();
-					if(Math.abs(dead - avg) < Math.abs(t - avg)) {
+					if(Math.abs(dead ) < Math.abs(t )) {
 						dead = (double)t ;
 						s = p;
 						a = pi;
@@ -213,7 +214,7 @@ public class TableGame extends JackGUI {
 			invisible_Move(actions[3], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead - avg) > Math.abs(num_seen() - avg)){
+			if (Math.abs(dead ) > Math.abs(num_seen() )){
 				Holmes.setxy(ori_x, ori_y);
 				Move(actions[3], null, 1);
 				//System.out.printf("Holmes move 1 steps\n");
@@ -232,7 +233,7 @@ public class TableGame extends JackGUI {
 			invisible_Move(actions[4], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead - avg) > Math.abs(num_seen() - avg)){
+			if (Math.abs(dead ) > Math.abs(num_seen() )){
 				dog.setxy(ori_x, ori_y);
 				Move(actions[4], null, 1);
 				//System.out.printf("dog move 1 steps\n");
@@ -254,7 +255,7 @@ public class TableGame extends JackGUI {
 			ori_y = Holmes.gridy;
 			invisible_Move(actions[5], Holmes, 1);
 			t = num_seen();
-			if (Math.abs(dead - avg) > Math.abs(t - avg)){
+			if (Math.abs(dead ) > Math.abs(t )){
 				dead = (double)t;
 				p = Holmes;
 				sp = 1;
@@ -266,7 +267,7 @@ public class TableGame extends JackGUI {
 			ori_y = Watson.gridy;
 			invisible_Move(actions[5], Watson, 1);
 			t = num_seen();
-			if (Math.abs(dead - avg) > Math.abs(t - avg)){
+			if (Math.abs(dead ) > Math.abs(t )){
 				dead = (double)t;
 				p = Watson;
 				sp = 1;
@@ -278,7 +279,7 @@ public class TableGame extends JackGUI {
 			ori_y = dog.gridy;
 			invisible_Move(actions[5], dog, 1);
 			t = num_seen();
-			if (Math.abs(dead - avg) > Math.abs(t - avg)){
+			if (Math.abs(dead ) > Math.abs(t )){
 				dead = (double)t;
 				p = dog;
 				sp = 1;
@@ -297,7 +298,7 @@ public class TableGame extends JackGUI {
 				for(int x =y+1;x<9;x++){
 					invisible_Swap(people[x],people[y]);
 					t = num_seen();
-					if (Math.abs(dead - avg) > Math.abs(t - avg)){
+					if (Math.abs(dead ) > Math.abs(t )){
 						dead = (double)t;
 						t1 =x;
 						t2 =y;
@@ -362,7 +363,7 @@ public class TableGame extends JackGUI {
 		//System.out.printf("dead: %f\n", dead);
 }
 	
-	public void inv_agent(Double avg) {
+	public Action_pack inv_agent() {
 		int H = -1;
 		//select the highest priority action.
 		for (int j = 0; j < 8; j++) {
@@ -375,8 +376,9 @@ public class TableGame extends JackGUI {
 		}
 		actions[H].setEnabled(false);
 		//judge the most suitable result
-		Double dead = 0.0;
-		int ori_x,ori_y;
+		Double dead = 0.0,comp = 0.0;
+		int ori_x,ori_y,cs=0;
+		Action_pack sel = new Action_pack();
 		switch (H) {
 		case 0:
 			ori_x = Watson.gridx;
@@ -387,19 +389,24 @@ public class TableGame extends JackGUI {
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
 			//current is better
-			if (Math.abs(dead - avg) < Math.abs(num_seen() - avg)){
+			comp = Math.abs((double)num_seen_living() - (double)num_living()/2);
+			System.out.printf("living: %d\nseen:%d\n,comp:%f\n",num_living(),num_seen_living(),comp);
+			if (Math.abs(dead - (double)num_living()/2) <  comp)
+			{
 				Watson.setxy(ori_x, ori_y);
-				Move(actions[0], null, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 1);
 				//System.out.printf("Watson move 1 steps\n");
 			}
 			else{
 				Watson.setxy(ori_x, ori_y);
-				Move(actions[0], null, 2);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 2);
 				//System.out.printf("Watson move 2 steps\n");
 			}
 			
 			break;
-		case 1:case 2:
+		case 1:cs=1;
+		case 2:
+			cs=2;
 			int s = 0,a=0;
 			int[] origin_angle = new int[9];
 			//save origin state.
@@ -413,8 +420,9 @@ public class TableGame extends JackGUI {
 					if(origin_angle[p] == pi) continue;
 					invisible_Spin(actions[1], people[p], pi);
 					//current is worse.
-					int t = num_seen();
-					if(Math.abs(dead - avg) > Math.abs(t - avg)) {
+					double t = Math.abs((double)num_seen_living() - (double)num_living()/2);
+					System.out.printf("living: %d\nseen:%d\n,comp:%f\n",num_living(),num_seen_living(),t);
+					if(Math.abs(dead -  (double)num_living()/2) > t) {
 						dead = (double)t ;
 						s = p;
 						a = pi;
@@ -425,7 +433,8 @@ public class TableGame extends JackGUI {
 			for(int i=0;i<9;i++){
 				people[i].setAngle(origin_angle[i]); 
 			}
-			Spin(actions[1],people[s],a);
+			sel.setRotation(cs, s, a);
+			//Spin(actions[cs],people[s],a);
 			//System.out.printf("people[%d] rotate %d\n",s,a);
 			break;
 		case 3:
@@ -436,14 +445,16 @@ public class TableGame extends JackGUI {
 			invisible_Move(actions[3], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead - avg) < Math.abs(num_seen() - avg)){
+			comp = Math.abs((double)num_seen_living() - (double)num_living()/2);
+			//System.out.printf("living: %d\nseen:%d\n,comp:%f\n",num_living(),num_seen_living(),comp);
+			if (Math.abs(dead - (double)num_living()/2) < comp){
 				Holmes.setxy(ori_x, ori_y);
-				Move(actions[3], null, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 1);
 				//System.out.printf("Holmes move 1 steps\n");
 			}
 			else{
 				Holmes.setxy(ori_x, ori_y);
-				Move(actions[3], null, 2);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 2);
 				//System.out.printf("Holmes move 2 steps\n");
 			}
 			break;
@@ -455,14 +466,16 @@ public class TableGame extends JackGUI {
 			invisible_Move(actions[4], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5. 
 			// Other cases > 0.5.
-			if (Math.abs(dead - avg) < Math.abs(num_seen() - avg)){
+			comp = Math.abs((double)num_seen_living() - (double)num_living()/2);
+			System.out.printf("living: %d\nseen:%d\n,comp:%f\n",num_living(),num_seen_living(),comp);
+			if (Math.abs(dead - (double)num_living()/2) < comp){
 				dog.setxy(ori_x, ori_y);
-				Move(actions[4], null, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 1);
 				//System.out.printf("dog move 1 steps\n");
 			}
 			else{
 				dog.setxy(ori_x, ori_y);
-				Move(actions[4], null, 2);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 2);
 				//System.out.printf("dog move 2 steps\n");
 			}
 			break;
@@ -476,9 +489,11 @@ public class TableGame extends JackGUI {
 			ori_x = Holmes.gridx;
 			ori_y = Holmes.gridy;
 			invisible_Move(actions[5], Holmes, 1);
-			t = num_seen();
-			if (Math.abs(dead - avg) < Math.abs(t - avg)){
-				dead = (double)t;
+			comp = Math.abs((double)num_seen_living() - (double)num_living()/2);
+			System.out.printf("3in1\n");
+			System.out.printf("living: %d\nseen:%d\n,comp:%f\n",num_living(),num_seen_living(),comp);
+			if (Math.abs(dead - (double)num_living()/2) < comp){
+				dead = comp;
 				p = Holmes;
 				sp = 1;
 			}
@@ -488,9 +503,10 @@ public class TableGame extends JackGUI {
 			ori_x = Watson.gridx;
 			ori_y = Watson.gridy;
 			invisible_Move(actions[5], Watson, 1);
-			t = num_seen();
-			if (Math.abs(dead - avg) < Math.abs(t - avg)){
-				dead = (double)t;
+			comp = Math.abs((double)num_seen_living() - (double)num_living()/2);
+			System.out.printf("living: %d\nseen:%d\n,comp:%f\n",num_living(),num_seen_living(),comp);
+			if (Math.abs(dead - (double)num_living()/2) < comp){
+				dead = comp;
 				p = Watson;
 				sp = 1;
 			}
@@ -500,17 +516,25 @@ public class TableGame extends JackGUI {
 			ori_x = dog.gridx;
 			ori_y = dog.gridy;
 			invisible_Move(actions[5], dog, 1);
-			t = num_seen();
-			if (Math.abs(dead - avg) < Math.abs(t - avg)){
-				dead = (double)t;
+			comp = Math.abs((double)num_seen_living() - (double)num_living()/2);
+			System.out.printf("living: %d\nseen:%d\n,comp:%f\n",num_living(),num_seen_living(),comp);
+			System.out.printf("3in1\n");
+			if (Math.abs(dead - (double)num_living()/2) < comp){
+				dead = comp;
 				p = dog;
 				sp = 1;
 			}
 			//reset
 			dog.setxy(ori_x, ori_y);
 			//actually do action. 
-			if(sp > 0)
-				Move(actions[5],p,sp);
+			if(sp > 0){
+				int tmp =0;
+				if(p == Watson) tmp = Action_pack.Watson;
+				else if(p == dog) tmp = Action_pack.Dog;
+				sel.setInvMemMove(Action_pack.Tri, tmp, sp);
+				//Move(actions[5],p,sp);
+			}
+				
 			//System.out.printf("act 5 move %d steps\n",sp);
 			break;
 		case 6:
@@ -519,9 +543,10 @@ public class TableGame extends JackGUI {
 			for(int y=0;y<9;y++){
 				for(int x =y+1;x<9;x++){
 					invisible_Swap(people[x],people[y]);
-					t = num_seen();
-					if (Math.abs(dead - avg) < Math.abs(t - avg)){
-						dead = (double)t;
+					comp = Math.abs((double)num_seen_living() - (double)num_living()/2);
+					System.out.printf("living: %d\nseen:%d\n,comp:%f\n",num_living(),num_seen_living(),comp);
+					if (Math.abs(dead - (double)num_living()/2) < comp){
+						dead = comp;
 						t1 =x;
 						t2 =y;
 					}
@@ -529,76 +554,31 @@ public class TableGame extends JackGUI {
 					invisible_Swap(people[x],people[y]);		
 				}
 			}
-			Swap(people[t1],people[t2]);
+			sel.setSwapCharacter(t1, t2);
+			//Swap(people[t1],people[t2]);
 			//System.out.printf("%d <-> %d\n",t1,t2);
 			break;
 		case 7:
-			myButton b = card.pop();
-			actions[7].setEnabled(false);
-			if(round % 2 == 0){
-				if(move == 1 || move == 4){
-					switch(b.character){
-					case 1:score += 2;break;
-					case 2:score += 0;break;
-					case 3:score += 1;break;
-					case 4:score += 0;break;
-					case 5:score += 1;break;
-					case 6:score += 1;break;
-					case 7:score += 1;break;
-					case 8:score += 1;break;
-					case 9:score += 1;break;
-					}
-				}
-				else {
-					if(!b.IsDead){
-						b.setDead();
-						mainwindow.revalidate();
-						mainwindow.repaint();
-					}
-				}
-			}
-			else {
-				if(move == 2 || move == 3){
-					switch(b.character){
-					case 1:score += 2;break;
-					case 2:score += 0;break;
-					case 3:score += 1;break;
-					case 4:score += 0;break;
-					case 5:score += 1;break;
-					case 6:score += 1;break;
-					case 7:score += 1;break;
-					case 8:score += 1;break;
-					case 9:score += 1;break;
-					}
-				}
-				else{
-					if(!b.IsDead){
-						b.setDead();
-						mainwindow.revalidate();
-						mainwindow.repaint();
-					}
-				}
-			}
-			refresh_score();
+			sel.setDraw();
 			break;
 		}
+		return sel;
 		//System.out.printf("dead: %f\n", dead);
 }
 	public void test_agent(int millis){
 		Delay(millis);
-		inv_agent(4.5);
+		inv_agent();
 		Delay(millis);
-		inv_agent(4.5);
+		inv_agent();
 		Delay(millis);
-		inv_agent(4.5);
+		inv_agent();
 		Delay(millis);
-		inv_agent(4.5);
+		inv_agent();
 		Delay(millis);
 	}
 	
 	public void game_start(int millis,WinRate Inv,WinRate Jack){
-		int jack_agent =0 ,investigator_agent = 1;
-		Double avg = 4.0;
+		int jack_agent =1 ,investigator_agent = 0;
 		//0 for random agent ;
 		//1 for base agent;
 		while(round!=9){
@@ -608,28 +588,28 @@ public class TableGame extends JackGUI {
 				Delay(millis);
 				switch(jack_agent){
 				case 0:random_agent();break;
-				case 1:jack_agent(avg);break;
+				case 1:jack_agent();break;
 				}
 				Delay(millis);
 				switch(investigator_agent){
 				case 0:random_agent();break;
 				case 1:
-					inv_agent(avg);
+					inv_agent();
 					Delay(millis);
-					inv_agent(avg);
+					inv_agent();
 					break;
 				}
 				Delay(millis);
 				switch(jack_agent){
 				case 0:random_agent();break;
-				case 1:jack_agent(avg);break;
+				case 1:jack_agent();break;
 				}
 			}
 			else {
 				Delay(millis);
 				switch(investigator_agent){
 				case 0:random_agent();break;
-				case 1:inv_agent(avg);break;
+				case 1:inv_agent();break;
 				}
 				Delay(millis);
 				switch(jack_agent){
@@ -639,15 +619,15 @@ public class TableGame extends JackGUI {
 					random_agent();
 					break;
 				case 1:
-					jack_agent(avg);
+					jack_agent();
 					Delay(millis);
-					jack_agent(avg);
+					jack_agent();
 					break;
 				}
 				Delay(millis);
 				switch(investigator_agent){
 				case 0:random_agent();break;
-				case 1:inv_agent(avg);break;
+				case 1:inv_agent();break;
 				}
 			}
 			Delay(millis);
@@ -662,11 +642,11 @@ public class TableGame extends JackGUI {
 		//*
 		for(int count=0;count<times;count++){
 			TableGame gui = new TableGame();
-			//gui.onCreate(TableGame.visible);
-			gui.onCreate(TableGame.invisible);
+			gui.onCreate(TableGame.visible);
+			//gui.onCreate(TableGame.invisible);
 			gui.jackid.setText("jack is ");
-			gui.game_start(TableGame.no_delay,Inv,Jack);
-			//gui.game_start(TableGame.interval,Inv,Jack);
+			//gui.game_start(TableGame.no_delay,Inv,Jack);
+			gui.game_start(TableGame.interval,Inv,Jack);
 			//gui.test_agent(1000);
 			
 		}//*/
@@ -711,11 +691,11 @@ public class TableGame extends JackGUI {
 		//who will be seen if investigators are arranged with these positions
 		/*
 		inv_pos:
-		    0 1 2
-		11x  x x 3    
-		10x  x x 4
-		 9 x  x x 5
-		    8 7 6
+		   0 1 2
+		11 x x x 3    
+		10 x x x 4
+		 9 x x x 5
+		   8 7 6
 		 */
 		if(inv_pos.length>3)
 			System.out.printf("in seen_if_such, parameter inv_pos length is wrong : %d\n", inv_pos.length);
