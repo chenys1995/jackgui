@@ -17,9 +17,7 @@ class myButton extends JButton {
 	}
 
 	public void setChar(int c) {
-		if (c != 0) {
 			character = c;
-		}
 	}
 
 	public void setAngle(int angle) {

@@ -23,13 +23,12 @@ public class inverse_action {
 		angle = p.angle;
 	}
 	public void setSwap(myButton t,myButton t2){
-		if(t == null || t2 == null) 
+		if(t == null || t2 == null) return;
 		ins = 2;
 		target = t;
 		target2 = t2;
 	}
 	public void exec(){
-		System.out.println();
 		switch(ins){
 		case 0:resetMove();break;
 		case 1:resetSpin();break;
@@ -38,7 +37,7 @@ public class inverse_action {
 	}
 	private void resetMove(){
 		target.gridx = origin_x;
-		target.gridx = origin_y;
+		target.gridy = origin_y;
 	}
 	private void resetSpin(){
 		target.angle = angle;

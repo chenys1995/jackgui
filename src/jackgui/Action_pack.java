@@ -5,8 +5,8 @@ public class Action_pack {
 	public static final int Moves = 0;
 	public static final int Swap = 1;
 	public static final int Spin = 2;
-	public static final int Draw=3;
-	public static final int Tri =4; 
+	public static final int Draw = 3;
+	public static final int Tri = 4; 
 	int cur_type,numOfAct,steps,c1,c2,angle,inv_team_member;
 	
 	Action_pack(){
@@ -15,8 +15,36 @@ public class Action_pack {
 		c1 = 0;
 		c2 = 0;
 		inv_team_member = 0;
-		steps = 0;
+		steps = 1;
 		angle = 0;
+	}
+	public void status(){
+		switch(numOfAct){
+		case 0:
+			System.out.printf("This action is move Watson %d steps\n",steps);
+			break;
+		case 1:
+		case 2:
+			System.out.printf("This action is spin %d,%d deg\n", 
+					c1,angle);
+			break;
+		case 3:
+			System.out.printf("This action is move Holmes %d steps\n",steps);
+			break;
+		case 4:
+			System.out.printf("This action is move Dog %d steps\n",steps);
+			break;
+		case 5:
+			System.out.printf("This action is Tri :%d steps\n",inv_team_member,
+					steps);
+			break;
+		case 6:
+			System.out.printf("This action is swap %d %d\n",c1, c2);
+			break;
+		case 7:
+			System.out.printf("This action is draw\n");
+			break;
+		}
 	}
 	public void transform(final int index){
 		numOfAct = index;

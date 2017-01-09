@@ -283,7 +283,9 @@ public class JackGUI implements ActionListener{
 	public void Spin(myButton action, myButton p, int angle) {
 		// if(action.isEnabled()) // //comment for test
 		{
-			p.setAngle(angle);
+			if(p.character!=6||!p.IsDead){
+				p.setAngle(angle);
+			}
 			String Path, Selector = "_" + p.angle + ".png";
 			if (!p.IsDead)
 				Path = "res/" + p.character;
@@ -401,7 +403,7 @@ public class JackGUI implements ActionListener{
 							Selector = "_" + ((Integer) angle.toArray()[c]) + ".png";
 					// System.out.printf("selector: %s\n", path+Selector);
 					people[c] = new myButton(new ImageIcon(path + Selector));
-					people[c].setChar((((Integer) order.toArray()[c]) + 1));
+					people[c].setChar((((Integer) order.toArray()[c]))+1);
 					people[c].setAngle(((Integer) angle.toArray()[c]));
 					people[c].setDisabledIcon(new ImageIcon(path + Selector));
 					people[c].addActionListener(this);
