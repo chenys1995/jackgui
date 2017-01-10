@@ -130,24 +130,24 @@ public class TableGame extends JackGUI {
 		}
 		actions[H].setEnabled(false);
 		// criteria 1
-		int not_seen = 0;
+		int survival = 0;
 		int ori_x, ori_y, cs = 0;
 		switch (H) {
 		case 0:
 			ori_x = Watson.gridx;
 			ori_y = Watson.gridy;
 			invisible_Move(actions[0], null, 1);
-			not_seen = num_NotSeen_and_living();
+			survival = Math.max(num_notseen_living(), num_seen_living());
 			invisible_Move(actions[0], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5.
 			// Other cases > 0.5.
 			// current is better
-			if (num_NotSeen_and_living() > not_seen && !is_Jack_be_Seen()) {
+			if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
 				Watson.setxy(ori_x, ori_y);
-				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 2);
 				// Move(actions[0], null, 1);
 				// System.out.printf("Watson move 1 steps\n");
-			} else if(!is_Jack_be_Seen()){
+			} else if(num_seen_living() > survival && is_Jack_be_Seen()){
 				Watson.setxy(ori_x, ori_y);
 				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 2);
 				// System.out.printf("Watson move 2 steps\n");
@@ -169,26 +169,26 @@ public class TableGame extends JackGUI {
 				origin_angle[i] = people[i].angle;
 			}
 			// decide the best situation.
-			not_seen = 0;// the worst
+			survival = 0;// the worst
 			for (int p = 0; p < 9; p++) {
 				for (int pi = 0; pi < 360; pi += 90) {
 					if (origin_angle[p] == pi)
 						continue;
 					invisible_Spin(actions[1], people[p], pi);
 					// current is worse.
-					int t = num_NotSeen_and_living();
-					if (t > not_seen && !is_Jack_be_Seen()) {
-						not_seen = t;
+					int t =Math.max(num_notseen_living(), num_seen_living());
+					if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
+						survival = num_notseen_living();
 						s = p;
 						a = pi;
 					}
-					else if(!is_Jack_be_Seen()){
-						not_seen = t;
+					else if(num_seen_living() > survival && is_Jack_be_Seen()){
+						survival = num_seen_living();
 						s = p;
 						a = pi;
 					}
-					else if(t > not_seen){
-						not_seen = t;
+					else if(t > survival){
+						survival = t;
 						s = p;
 						a = pi;
 					}
@@ -207,16 +207,16 @@ public class TableGame extends JackGUI {
 			ori_x = Holmes.gridx;
 			ori_y = Holmes.gridy;
 			invisible_Move(actions[3], null, 1);
-			not_seen = num_NotSeen_and_living();
+			survival = Math.max(num_notseen_living(), num_seen_living());
 			invisible_Move(actions[3], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5.
 			// Other cases > 0.5.
-			if (num_NotSeen_and_living() > not_seen && !is_Jack_be_Seen()) {
+			if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
 				Holmes.setxy(ori_x, ori_y);
-				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 2);
 				// Move(actions[3], null, 1);
 				// System.out.printf("Holmes move 1 steps\n");
-			} else if(!is_Jack_be_Seen()){
+			} else if(num_seen_living() > survival&&is_Jack_be_Seen()){
 				Holmes.setxy(ori_x, ori_y);
 				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 2);
 				// Move(actions[3], null, 2);
@@ -233,16 +233,16 @@ public class TableGame extends JackGUI {
 			ori_x = dog.gridx;
 			ori_y = dog.gridy;
 			invisible_Move(actions[4], null, 1);
-			not_seen = num_NotSeen_and_living();
+			survival = Math.max(num_notseen_living(), num_seen_living());
 			invisible_Move(actions[4], null, 2);
 			// Select the most average cases |(4 or 5)-avg| = 0.5.
 			// Other cases > 0.5.
-			if (num_NotSeen_and_living() > not_seen && !is_Jack_be_Seen()) {
+			if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
 				dog.setxy(ori_x, ori_y);
-				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 1);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 2);
 				// Move(actions[4], null, 1);
 				// System.out.printf("dog move 1 steps\n");
-			} else if(!is_Jack_be_Seen()){
+			} else if(num_seen_living() > survival && is_Jack_be_Seen()){
 				dog.setxy(ori_x, ori_y);
 				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 2);
 				// Move(actions[4], null, 2);
@@ -258,14 +258,14 @@ public class TableGame extends JackGUI {
 			int sp = 0;
 			int t;
 			// zero step
-			not_seen = num_NotSeen_and_living();
+			survival = Math.max(num_notseen_living(), num_seen_living());
 			// Holmes's phase
 			ori_x = Holmes.gridx;
 			ori_y = Holmes.gridy;
 			invisible_Move(actions[5], Holmes, 1);
-			t = num_NotSeen_and_living();
-			if (t > not_seen) {
-				not_seen = t;
+			t = Math.max(num_notseen_living(), num_seen_living());
+			if (t > survival) {
+				survival = t;
 				p = Holmes;
 				sp = 1;
 			}
@@ -275,9 +275,9 @@ public class TableGame extends JackGUI {
 			ori_x = Watson.gridx;
 			ori_y = Watson.gridy;
 			invisible_Move(actions[5], Watson, 1);
-			t = num_NotSeen_and_living();
-			if (t > not_seen) {
-				not_seen = t;
+			t = Math.max(num_notseen_living(), num_seen_living());
+			if (t > survival) {
+				survival = t;
 				p = Watson;
 				sp = 1;
 			}
@@ -287,9 +287,9 @@ public class TableGame extends JackGUI {
 			ori_x = dog.gridx;
 			ori_y = dog.gridy;
 			invisible_Move(actions[5], dog, 1);
-			t = num_NotSeen_and_living();
-			if (t > not_seen) {
-				not_seen = t;
+			t = Math.max(num_notseen_living(), num_seen_living());
+			if (t > survival) {
+				survival = t;
 				p = dog;
 				sp = 1;
 			}
@@ -308,24 +308,24 @@ public class TableGame extends JackGUI {
 			// System.out.printf("act 5 move %d steps\n",sp);
 			break;
 		case 6:
-			not_seen = 0;
+			survival = 0;
 			int t1 = 0, t2 = 1;
 			for (int y = 0; y < 9; y++) {
 				for (int x = y + 1; x < 9; x++) {
 					invisible_Swap(people[x], people[y]);
-					t = num_NotSeen_and_living();
-					if (t > not_seen && !is_Jack_be_Seen()) {
-						not_seen = t;
+					t = Math.max(num_notseen_living(), num_seen_living());
+					if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
+						survival = num_notseen_living();
 						t1 = x;
 						t2 = y;
 					}
-					else if(!is_Jack_be_Seen()){
-						not_seen = t;
+					else if(num_seen_living() > survival&& is_Jack_be_Seen()){
+						survival = num_seen_living() ;
 						t1 = x;
 						t2 = y;
 					}
-					else if(t > not_seen){
-						not_seen = t;
+					else if(t > survival){
+						survival = t;
 						t1 = x;
 						t2 = y;
 					}
@@ -644,8 +644,8 @@ public class TableGame extends JackGUI {
 								best[0] = sel[i][j];
 								best[1] = sel[k][l];
 							}
+							iv2.exec();
 						}
-						iv2.exec();
 					}
 					iv.exec();
 				}
@@ -725,7 +725,7 @@ public class TableGame extends JackGUI {
 				}
 			}
 			// Combine two action and select the best combination.
-			int endp = 0;// effective number of dead people
+			int ensp = 0;// effective number of survival people
 			for (int i = 0; i < Remaining_action; i++) {// action i or j
 				for (int j = i+1; j < sz[i]; j++) {
 					if(sel[i][0].cur_type==Action_pack.Draw)continue;
@@ -737,14 +737,24 @@ public class TableGame extends JackGUI {
 							//System.out.printf("The iv2 (%d,%d) ",k,l);
 							//sel[k][l].status();
 							iv2 = exec(sel[k][l], false);
-							int res = num_NotSeen_and_living();
-							if (endp < res) {
-								endp = res;
+							int res = Math.max(num_seen_living(),num_notseen_living());
+							if (num_notseen_living() > ensp &&!is_Jack_be_Seen()){
+								ensp = num_notseen_living();
 								best[0] = sel[i][j];
 								best[1] = sel[k][l];
 							}
+							else if (num_seen_living() > ensp &&is_Jack_be_Seen()){
+								ensp = num_seen_living() ;
+								best[0] = sel[i][j];
+								best[1] = sel[k][l];
+							}
+							else if(res >ensp){
+								ensp = res;
+								best[0] = sel[i][j];
+								best[1] = sel[k][l];
+							}
+							iv2.exec();
 						}
-						iv2.exec();
 					}
 					iv.exec();
 				}
@@ -754,17 +764,7 @@ public class TableGame extends JackGUI {
 	}
 
 
-	public Action_pack four_opt_jack_agent() {
-		Action_pack best = new Action_pack();
-		List<Integer> available_list = new ArrayList<Integer>();
-		inverse_action iv = new inverse_action(), iv2 = new inverse_action();
-		for (int j = 0; j < 8; j++) {
-			if (actions[j].isEnabled()) {
-				available_list.add(j);
-			}
-		}
-		return best;
-	}
+
 	public void test_agent(int millis) {
 		/*Delay(millis);
 		Action_pack jk=jack_agent();
@@ -782,23 +782,10 @@ public class TableGame extends JackGUI {
 		jk.status();
 		exec(jk,true);
 		Delay(millis);*/
-		int s=0;
-		for(int i=0;i<9;i++){
-			if(people[i].character==jack)s=i;
-		}
-		System.out.printf("jack is %d,seen:%b\n",s,is_Jack_be_Seen());
-		System.out.printf("Up seen:%b\n",
-				Go_Up(people[s].gridx,people[s].gridy));
-		System.out.printf("Down seen:%b\n",
-				Go_Down(people[s].gridx,people[s].gridy));
-		System.out.printf("Left seen:%b\n",
-				Go_Left(people[s].gridx,people[s].gridy));
-		System.out.printf("Right seen:%b\n",
-				Go_Right(people[s].gridx,people[s].gridy));
 	}
 
 	public void game_start(int millis, WinRate Inv, WinRate Jack) {
-		int jack_agent = 2 , investigator_agent =2;
+		int jack_agent = 1 , investigator_agent =2;
 		final Boolean isVisible = true;
 		// 0 for random agent ;
 		// 1 for base agent;
@@ -851,7 +838,7 @@ public class TableGame extends JackGUI {
 					exec(jack_agent(), isVisible);
 					break;
 				case 2:
-					Action_pack[] best = middle_opt_jack_agent(4);
+					Action_pack[] best = middle_opt_jack_agent(1);
 					exec(best[0], isVisible);
 					break;
 				}
@@ -963,7 +950,7 @@ public class TableGame extends JackGUI {
 		return result;
 	}
 
-	public int num_NotSeen_and_living() {
+	public int num_notseen_living() {
 		return num_living() - num_seen_living();
 	}
 	private boolean Go_Up(int i,int j){
