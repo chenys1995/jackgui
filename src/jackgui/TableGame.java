@@ -972,15 +972,15 @@ public class TableGame extends JackGUI {
 
 	public static void main(String[] args) {
 		WinRate Inv = new WinRate(), Jack = new WinRate();
-		int times = 10000;
+		int times = 1;
 		//*
 		for (int count = 0; count < times; count++) {
 			TableGame gui = new TableGame();
-			//gui.onCreate(TableGame.visible);
-			gui.onCreate(TableGame.invisible);
+			gui.onCreate(TableGame.visible);
+			//gui.onCreate(TableGame.invisible);
 			gui.jackid.setText("jack is ");
-			gui.game_start(TableGame.no_delay, Inv, Jack);
-			//gui.game_start(TableGame.interval,Inv,Jack);
+			//gui.game_start(TableGame.no_delay, Inv, Jack);
+			gui.game_start(2*TableGame.interval,Inv,Jack);
 			//gui.test_agent(1000);
 
 		}  
