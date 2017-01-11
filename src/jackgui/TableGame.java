@@ -1005,7 +1005,7 @@ public class TableGame extends JackGUI {
 		System.out.printf("used:%d\n",used);
 	}
 	public void game_start(int millis, WinRate Inv, WinRate Jack) {
-		int jack_agent = 0 , investigator_agent =0;
+		int jack_agent = -1 , investigator_agent =2;
 		final Boolean isVisible = true;
 		Action_pack tmp = null;
 		// 0 for random agent ;
@@ -1034,6 +1034,11 @@ public class TableGame extends JackGUI {
 					Action_pack[] best = middle_opt_jack_agent(4);
 					exec(best[0], isVisible);
 					actions[best[0].numOfAct].setUsed(true);
+					break;
+				case 3:
+					tmp =ori_jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				}
 				Delay(millis);
@@ -1069,6 +1074,11 @@ public class TableGame extends JackGUI {
 					actions[best[0].numOfAct].setEnabled(false);
 					actions[best[1].numOfAct].setEnabled(false);
 					break;
+				case 3:
+					tmp =ori_jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
+					break;
 				}
 				Delay(millis);
 				// Jack move 1
@@ -1094,6 +1104,7 @@ public class TableGame extends JackGUI {
 				Delay(millis);
 				// Inv move 1
 				switch (investigator_agent) {
+				case -1:wait_act_used(1);break;
 				case 0:
 					tmp =random_agent();
 					exec(tmp,isVisible);
@@ -1109,11 +1120,11 @@ public class TableGame extends JackGUI {
 					exec(best[0], isVisible);
 					actions[best[0].numOfAct].setUsed(true);
 					break;
-				default:wait_act_used(1);break;
 				}
 				Delay(millis);
 				// Jack move 2
 				switch (jack_agent) {
+				case -1:wait_act_used(3);break;
 				case 0:
 					tmp =random_agent();
 					exec(tmp,isVisible);
@@ -1142,10 +1153,19 @@ public class TableGame extends JackGUI {
 					actions[best[0].numOfAct].setEnabled(false);
 					actions[best[1].numOfAct].setEnabled(false);
 					break;
-				default:wait_act_used(3);break;
+				case 3:
+					tmp =ori_jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
+					Delay(millis);
+					tmp =ori_jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
+					break;
 				}
 				Delay(millis);
 				switch (investigator_agent) {
+				case -1:wait_act_used(4);break;
 				case 0:
 					tmp =random_agent();
 					exec(tmp,isVisible);
@@ -1183,8 +1203,8 @@ public class TableGame extends JackGUI {
 			gui.onCreate(TableGame.visible);
 			//gui.onCreate(TableGame.invisible);
 			gui.jackid.setText("jack is ");
-			//gui.game_start(TableGame.no_delay, Inv, Jack);
-			gui.game_start(2*TableGame.interval,Inv,Jack);
+			gui.game_start(TableGame.no_delay, Inv, Jack);
+			//gui.game_start(TableGame.interval,Inv,Jack);
 			//gui.test_agent(1000);
 
 		}  
