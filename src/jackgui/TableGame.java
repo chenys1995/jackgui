@@ -68,21 +68,23 @@ public class TableGame extends JackGUI {
 		actions[H].setEnabled(false);
 		switch (H) {
 		case 0:
-			sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, r.nextInt(2));
+			sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, r.nextInt(2)+1);
 			// Move(actions[0], null, r.nextInt(2));
 			break;
 		case 1:
 			sel.setSpin(1, r.nextInt(9), r.nextInt(4) * 90);
 			break;
 		case 2:
-			sel.setSpin(2, r.nextInt(9), r.nextInt(4) * 90);
+			int a =r.nextInt(4) *90,pp=r.nextInt(9);
+			while(people[pp].angle == a)a =r.nextInt(4) *90;
+			sel.setSpin(2, pp, a);
 			// Spin(actions[1],people[r.nextInt(9)],r.nextInt(4)*90);
 			break;
 		case 3:
-			sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, r.nextInt(2));
+			sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, r.nextInt(2)+1);
 			break;
 		case 4:
-			sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, r.nextInt(2));
+			sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, r.nextInt(2)+1);
 			break;
 		case 5:
 			// myButton p =null;
@@ -98,7 +100,7 @@ public class TableGame extends JackGUI {
 				p = Action_pack.Dog;
 				break;
 			}
-			sel.setInvMemMove(Action_pack.Moves, p, r.nextInt(1));
+			sel.setInvMemMove(Action_pack.Moves, p, r.nextInt(2));
 			// Move(actions[5],p,r.nextInt(1));
 			break;
 		case 6:
@@ -644,7 +646,7 @@ public class TableGame extends JackGUI {
 								best[0] = sel[i][j];
 								best[1] = sel[k][l];
 							}
-							iv2.exec();
+							iv2.exec();		
 						}
 					}
 					iv.exec();
@@ -754,6 +756,7 @@ public class TableGame extends JackGUI {
 								best[1] = sel[k][l];
 							}
 							iv2.exec();
+
 						}
 					}
 					iv.exec();
@@ -783,12 +786,28 @@ public class TableGame extends JackGUI {
 		exec(jk,true);
 		Delay(millis);*/
 	}
-
+	public void wait_act_used(int num){
+		int used = 0;
+		while(used!=num){
+			used = 0;
+			for(int i=0;i<8;i++){
+				if(actions[i].isUsed){
+					System.out.printf("%d is used\n",i);
+					used++;
+				}
+			}
+			Delay(10);
+		}
+		System.out.printf("used:%d\n",used);
+	}
 	public void game_start(int millis, WinRate Inv, WinRate Jack) {
-		int jack_agent = 1 , investigator_agent =2;
+		int jack_agent = 0 , investigator_agent =0;
 		final Boolean isVisible = true;
+		Action_pack tmp = null;
 		// 0 for random agent ;
 		// 1 for base agent;
+		// 2 for advanced agent;
+		//other for manual;
 		while (round != 9) {
 			// System.out.printf("Round:%d\n",round);
 			refresh_round();
@@ -796,34 +815,53 @@ public class TableGame extends JackGUI {
 				Delay(millis);
 				// Jack move 1
 				switch (jack_agent) {
+				case -1:wait_act_used(1);break;
 				case 0:
-					exec(random_agent(), isVisible);
+					tmp =random_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 1:
-					exec(jack_agent(), isVisible);
+					tmp =jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_jack_agent(4);
 					exec(best[0], isVisible);
+					actions[best[0].numOfAct].setUsed(true);
 					break;
 				}
 				Delay(millis);
 				// Inv move 2
 				switch (investigator_agent) {
+				case -1:wait_act_used(3);break;
 				case 0:
-					exec(random_agent(), isVisible);
+					tmp =random_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					Delay(millis);
-					exec(random_agent(), isVisible);
+					tmp =random_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 1:
-					exec(inv_agent(), isVisible);
+					tmp =inv_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					Delay(millis);
-					exec(inv_agent(), isVisible);
+					tmp =inv_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_inv_agent(3);
 					exec(best[0], isVisible);
+					actions[best[0].numOfAct].setUsed(true);
+					Delay(millis);
 					exec(best[1], isVisible);
+					actions[best[1].numOfAct].setUsed(true);
+					//
 					actions[best[0].numOfAct].setEnabled(false);
 					actions[best[1].numOfAct].setEnabled(false);
 					break;
@@ -831,15 +869,21 @@ public class TableGame extends JackGUI {
 				Delay(millis);
 				// Jack move 1
 				switch (jack_agent) {
+				case -1:wait_act_used(4);break;
 				case 0:
-					exec(random_agent(), isVisible);
+					tmp =random_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 1:
-					exec(jack_agent(), isVisible);
+					tmp =jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_jack_agent(1);
 					exec(best[0], isVisible);
+					actions[best[0].numOfAct].setUsed(true);
 					break;
 				}
 			} else {
@@ -847,52 +891,79 @@ public class TableGame extends JackGUI {
 				// Inv move 1
 				switch (investigator_agent) {
 				case 0:
-					exec(random_agent(), isVisible);
+					tmp =random_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 1:
-					exec(inv_agent(), isVisible);
+					tmp =inv_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_inv_agent(4);
 					exec(best[0], isVisible);
+					actions[best[0].numOfAct].setUsed(true);
 					break;
+				default:wait_act_used(1);break;
 				}
 				Delay(millis);
 				// Jack move 2
 				switch (jack_agent) {
 				case 0:
-					exec(random_agent(), isVisible);
+					tmp =random_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					Delay(millis);
-					exec(random_agent(), isVisible);
+					tmp =random_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 1:
-					exec(jack_agent(), isVisible);
+					tmp =jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					Delay(millis);
-					exec(jack_agent(), isVisible);
+					tmp =jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_jack_agent(3);
 					exec(best[0], isVisible);
+					actions[best[0].numOfAct].setUsed(true);
+					Delay(millis);
 					exec(best[1], isVisible);
+					actions[best[1].numOfAct].setUsed(true);
 					actions[best[0].numOfAct].setEnabled(false);
 					actions[best[1].numOfAct].setEnabled(false);
 					break;
+				default:wait_act_used(3);break;
 				}
 				Delay(millis);
 				switch (investigator_agent) {
 				case 0:
-					exec(random_agent(), isVisible);
+					tmp =random_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 1:
-					exec(inv_agent(), isVisible);
+					tmp =inv_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_inv_agent(1);
 					exec(best[0], isVisible);
+					actions[best[0].numOfAct].setUsed(true);
 					break;
+				default:wait_act_used(4);break;
 				}
 			}
 			Delay(millis);
+			for(int i=0;i<8;i++){
+				actions[i].setUsed(false);
+			}
 			if (round_done(Inv, Jack)) {
 				return;
 			}

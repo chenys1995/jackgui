@@ -8,7 +8,6 @@ public class Action_pack {
 	public static final int Draw = 3;
 	public static final int Tri = 4; 
 	int cur_type,numOfAct,steps,c1,c2,angle,inv_team_member;
-	
 	Action_pack(){
 		cur_type =0;
 		numOfAct = 0;
@@ -17,6 +16,7 @@ public class Action_pack {
 		inv_team_member = 0;
 		steps = 1;
 		angle = 0;
+		
 	}
 	public void status(){
 		switch(numOfAct){

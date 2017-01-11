@@ -147,6 +147,7 @@ public class JackGUI implements ActionListener{
 
 			System.out.printf("preClick: %d\n", preClick);
 			actions[preClick].setEnabled(false);
+			actions[preClick].setUsed(true);
 			if (preClick == 0 || preClick == 3 || preClick == 4 || preClick == 5) {
 				Holmes.setEnabled(false);
 				Watson.setEnabled(false);

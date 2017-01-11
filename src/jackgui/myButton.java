@@ -5,7 +5,7 @@ import javax.swing.JButton;
 
 class myButton extends JButton {
 
-	boolean IsPeople = false, IsDead = false;
+	boolean IsPeople = false, IsDead = false,isUsed=false;
 	int gridx, gridy, character, angle = 0;
 	private static final long serialVersionUID = 1838929864725400980L;
 	public myButton(ImageIcon imageIcon) {
@@ -23,7 +23,9 @@ class myButton extends JButton {
 	public void setAngle(int angle) {
 		this.angle = angle;
 	}
-
+	public void setUsed(Boolean used) {
+		this.isUsed = used;
+	}
 	public void setDead() {
 		IsDead = true;
 		if (this.character == 6) {
