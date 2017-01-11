@@ -996,16 +996,14 @@ public class TableGame extends JackGUI {
 			used = 0;
 			for(int i=0;i<8;i++){
 				if(actions[i].isUsed){
-					System.out.printf("%d is used\n",i);
 					used++;
 				}
 			}
 			Delay(10);
 		}
-		System.out.printf("used:%d\n",used);
 	}
 	public void game_start(int millis, WinRate Inv, WinRate Jack) {
-		int jack_agent = -1 , investigator_agent =2;
+		int jack_agent = 3 , investigator_agent =1;
 		final Boolean isVisible = true;
 		Action_pack tmp = null;
 		// 0 for random agent ;
@@ -1056,28 +1054,27 @@ public class TableGame extends JackGUI {
 					break;
 				case 1:
 					tmp =inv_agent();
+					tmp.status();
 					exec(tmp,isVisible);
 					actions[tmp.numOfAct].setUsed(true);
 					Delay(millis);
 					tmp =inv_agent();
+					tmp.status();
 					exec(tmp,isVisible);
 					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_inv_agent(3);
+					best[0].status();
 					exec(best[0], isVisible);
 					actions[best[0].numOfAct].setUsed(true);
 					Delay(millis);
+					best[1].status();
 					exec(best[1], isVisible);
 					actions[best[1].numOfAct].setUsed(true);
 					//
 					actions[best[0].numOfAct].setEnabled(false);
 					actions[best[1].numOfAct].setEnabled(false);
-					break;
-				case 3:
-					tmp =ori_jack_agent();
-					exec(tmp,isVisible);
-					actions[tmp.numOfAct].setUsed(true);
 					break;
 				}
 				Delay(millis);
@@ -1099,6 +1096,11 @@ public class TableGame extends JackGUI {
 					exec(best[0], isVisible);
 					actions[best[0].numOfAct].setUsed(true);
 					break;
+				case 3:
+					tmp =ori_jack_agent();
+					exec(tmp,isVisible);
+					actions[tmp.numOfAct].setUsed(true);
+					break;
 				}
 			} else {
 				Delay(millis);
@@ -1112,11 +1114,13 @@ public class TableGame extends JackGUI {
 					break;
 				case 1:
 					tmp =inv_agent();
+					tmp.status();
 					exec(tmp,isVisible);
 					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_inv_agent(4);
+					best[0].status();
 					exec(best[0], isVisible);
 					actions[best[0].numOfAct].setUsed(true);
 					break;
@@ -1173,15 +1177,16 @@ public class TableGame extends JackGUI {
 					break;
 				case 1:
 					tmp =inv_agent();
+					tmp.status();
 					exec(tmp,isVisible);
 					actions[tmp.numOfAct].setUsed(true);
 					break;
 				case 2:
 					Action_pack[] best = middle_opt_inv_agent(1);
 					exec(best[0], isVisible);
+					best[0].status();
 					actions[best[0].numOfAct].setUsed(true);
 					break;
-				default:wait_act_used(4);break;
 				}
 			}
 			Delay(millis);
@@ -1196,17 +1201,16 @@ public class TableGame extends JackGUI {
 
 	public static void main(String[] args) {
 		WinRate Inv = new WinRate(), Jack = new WinRate();
-		int times = 1;
+		int times = 10000;
 		//*
 		for (int count = 0; count < times; count++) {
 			TableGame gui = new TableGame();
-			gui.onCreate(TableGame.visible);
-			//gui.onCreate(TableGame.invisible);
+			//gui.onCreate(TableGame.visible);
+			gui.onCreate(TableGame.invisible);
 			gui.jackid.setText("jack is ");
 			gui.game_start(TableGame.no_delay, Inv, Jack);
 			//gui.game_start(TableGame.interval,Inv,Jack);
 			//gui.test_agent(1000);
-
 		}  
 		//*/
 		
