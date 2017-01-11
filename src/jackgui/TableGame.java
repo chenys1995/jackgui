@@ -346,7 +346,211 @@ public class TableGame extends JackGUI {
 		return sel;
 		// System.out.printf("dead: %f\n", dead);
 	}
-
+	public Action_pack ori_jack_agent() {
+		Action_pack sel = new Action_pack();
+		int H = -1;
+		// select the highest priority action.
+		for (int j = 0; j < 8; j++) {
+			if (actions[j].isEnabled()) {
+				if (H != -1)
+					H = priority_of(actions[H]) < priority_of(actions[j]) ? j : H;
+				else
+					H = j;
+			}
+		}
+		actions[H].setEnabled(false);
+		// criteria 1
+		int survival = 0;
+		int ori_x, ori_y, cs = 0;
+		switch (H) {
+		case 0:
+			ori_x = Watson.gridx;
+			ori_y = Watson.gridy;
+			invisible_Move(actions[0], null, 1);
+			survival = Math.max(num_notseen_living(), num_seen_living());
+			invisible_Move(actions[0], null, 2);
+			// Select the most average cases |(4 or 5)-avg| = 0.5.
+			// Other cases > 0.5.
+			// current is better
+			if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
+				Watson.setxy(ori_x, ori_y);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 2);
+				// Move(actions[0], null, 1);
+				// System.out.printf("Watson move 1 steps\n");
+			}
+			else if(num_notseen_living() > survival){
+				Watson.setxy(ori_x, ori_y);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Watson, 1);
+				// System.out.printf("Watson move 2 steps\n");
+			}
+			break;
+		case 1:
+			cs = 1;
+		case 2:
+			
+			int s = 0, a = 0;
+			int[] origin_angle = new int[9];
+			// save origin state.
+			for (int i = 0; i < 9; i++) {
+				origin_angle[i] = people[i].angle;
+			}
+			// decide the best situation.
+			survival = 0;// the worst
+			for (int p = 0; p < 9; p++) {
+				for (int pi = 0; pi < 360; pi += 90) {
+					if (origin_angle[p] == pi)
+						continue;
+					invisible_Spin(actions[1], people[p], pi);
+					// current is worse.
+					int t =Math.max(num_notseen_living(), num_seen_living());
+					if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
+						survival = num_notseen_living();
+						s = p;
+						a = pi;
+					}
+					else if(t > survival){
+						survival = t;
+						s = p;
+						a = pi;
+					}
+				}
+			}
+			// reverse origin state;
+			for (int i = 0; i < 9; i++) {
+				people[i].setAngle(origin_angle[i]);
+			}
+			if(cs!=1)cs=2;
+			sel.setSpin(cs, s, a);
+			// Spin(actions[1],people[s],a);
+			// System.out.printf("people[%d] rotate %d\n",s,a);
+			break;
+		case 3:
+			ori_x = Holmes.gridx;
+			ori_y = Holmes.gridy;
+			invisible_Move(actions[3], null, 1);
+			survival = Math.max(num_notseen_living(), num_seen_living());
+			invisible_Move(actions[3], null, 2);
+			// Select the most average cases |(4 or 5)-avg| = 0.5.
+			// Other cases > 0.5.
+			if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
+				Holmes.setxy(ori_x, ori_y);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 2);
+				// Move(actions[3], null, 1);
+				// System.out.printf("Holmes move 1 steps\n");
+			} 
+			else if(num_notseen_living() > survival){
+				Holmes.setxy(ori_x, ori_y);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Holmes, 1);
+				// Move(actions[3], null, 2);
+				// System.out.printf("Holmes move 2 steps\n");
+			}
+			break;
+		case 4:
+			ori_x = dog.gridx;
+			ori_y = dog.gridy;
+			invisible_Move(actions[4], null, 1);
+			survival = Math.max(num_notseen_living(), num_seen_living());
+			invisible_Move(actions[4], null, 2);
+			// Select the most average cases |(4 or 5)-avg| = 0.5.
+			// Other cases > 0.5.
+			if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
+				dog.setxy(ori_x, ori_y);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 2);
+				// Move(actions[4], null, 1);
+				// System.out.printf("dog move 1 steps\n");
+			} 
+			else if(num_notseen_living() >survival){
+				dog.setxy(ori_x, ori_y);
+				sel.setInvMemMove(Action_pack.Moves, Action_pack.Dog, 1);
+			}
+			break;
+		case 5:
+			myButton p = null;
+			int sp = 0;
+			int t;
+			// zero step
+			survival = Math.max(num_notseen_living(), num_seen_living());
+			// Holmes's phase
+			ori_x = Holmes.gridx;
+			ori_y = Holmes.gridy;
+			invisible_Move(actions[5], Holmes, 1);
+			t = Math.max(num_notseen_living(), num_seen_living());
+			if (t > survival) {
+				survival = t;
+				p = Holmes;
+				sp = 1;
+			}
+			// reset
+			Holmes.setxy(ori_x, ori_y);
+			// Watson's phase
+			ori_x = Watson.gridx;
+			ori_y = Watson.gridy;
+			invisible_Move(actions[5], Watson, 1);
+			t = Math.max(num_notseen_living(), num_seen_living());
+			if (t > survival) {
+				survival = t;
+				p = Watson;
+				sp = 1;
+			}
+			// reset
+			Watson.setxy(ori_x, ori_y);
+			// Dog's phase
+			ori_x = dog.gridx;
+			ori_y = dog.gridy;
+			invisible_Move(actions[5], dog, 1);
+			t = Math.max(num_notseen_living(), num_seen_living());
+			if (t > survival) {
+				survival = t;
+				p = dog;
+				sp = 1;
+			}
+			// reset
+			dog.setxy(ori_x, ori_y);
+			// actually do action.
+			if (sp > 0) {
+				int tmp = 0;
+				if (p == Watson)
+					tmp = Action_pack.Watson;
+				else if (p == dog)
+					tmp = Action_pack.Dog;
+				sel.setInvMemMove(Action_pack.Tri, tmp, sp);
+				// Move(actions[5],p,sp);
+			}
+			// System.out.printf("act 5 move %d steps\n",sp);
+			break;
+		case 6:
+			survival = 0;
+			int t1 = 0, t2 = 1;
+			for (int y = 0; y < 9; y++) {
+				for (int x = y + 1; x < 9; x++) {
+					invisible_Swap(people[x], people[y]);
+					t = Math.max(num_notseen_living(), num_seen_living());
+					if (num_notseen_living() > survival && !is_Jack_be_Seen()) {
+						survival = num_notseen_living();
+						t1 = x;
+						t2 = y;
+					}
+					else if(t > survival){
+						survival = t;
+						t1 = x;
+						t2 = y;
+					}
+					// reset
+					invisible_Swap(people[x], people[y]);
+				}
+			}
+			sel.setSwapCharacter(t1, t2);
+			// Swap(people[t1],people[t2]);
+			// System.out.printf("%d <-> %d\n",t1,t2);
+			break;
+		case 7:
+			sel.setDraw();
+			break;
+		}
+		return sel;
+		// System.out.printf("dead: %f\n", dead);
+	}
+	
 	public Action_pack inv_agent() {
 		int H = -1;
 		// select the highest priority action.
