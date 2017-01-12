@@ -95,6 +95,8 @@ public class JackGUI implements ActionListener{
 		} else if (e.getSource() == actions[7]) {
 			preClick = 7;
 			myButton p = card.pop();
+			System.out.printf("Draw:people %d x:%d,y:%d\n",p.character,p.gridx
+					,p.gridy);
 			actions[7].setEnabled(false);
 			ok.setEnabled(true);
 			//plus score or people dead
@@ -145,7 +147,7 @@ public class JackGUI implements ActionListener{
 			refresh_score();
 		} else if (e.getSource() == ok) {
 
-			System.out.printf("preClick: %d\n", preClick);
+			//System.out.printf("preClick: %d\n", preClick);
 			actions[preClick].setEnabled(false);
 			actions[preClick].setUsed(true);
 			if (preClick == 0 || preClick == 3 || preClick == 4 || preClick == 5) {
@@ -184,8 +186,8 @@ public class JackGUI implements ActionListener{
 			move++;
 			if (move == 5) {
 				move = 1;
-				WinRate Inv=new WinRate(),Jack=new WinRate();
-				round_done(Inv,Jack);
+				//WinRate Inv=new WinRate(),Jack=new WinRate();
+				//round_done(Inv,Jack);
 			}
 		}
 		for (int i = 0; i < 9; i++) {
@@ -219,6 +221,8 @@ public class JackGUI implements ActionListener{
 	}
 	public void Draw(){
 		myButton b = card.pop();
+		//System.out.printf("Draw:people %d x:%d,y:%d\n",b.character,b.gridx
+				//,b.gridy);
 		actions[7].setEnabled(false);
 		if(round % 2 == 0){
 			if(move == 1 || move == 4){
@@ -458,9 +462,8 @@ public class JackGUI implements ActionListener{
 					jackid.setEditable(false);
 					jackid.setFont(f);
 					mainwindow.add(jackid, cons);
-				} else if (i == 7 && j == 3) {
+				} else if (i == 7 && j == 3) {	
 					displayJack.setxy(j, i);
-					displayJack.setEnabled(false);
 					mainwindow.add(displayJack, cons);
 				}
 			}
@@ -489,7 +492,7 @@ public class JackGUI implements ActionListener{
 			card.push(people[(Integer) order.toArray()[i]]);
 		}
 		jack = card.pop().character;
-		
+		displayJack.setIcon(new ImageIcon("res/"+jack+"_0.png"));
 		mainwindow.revalidate();
 		mainwindow.repaint();
 	}
