@@ -1678,25 +1678,25 @@ public class JackGUI implements ActionListener{
 		if(gameover == 1 && score >= 6&& !jack_seen&& round==9){
 			Jack.Win();
 			Inv.lose();
-			System.out.printf("Jack has endured, Jack wins\n");
+			//System.out.printf("Jack has endured, Jack wins\n");
 			return true;
 		}
 		else if(gameover == 1 && score >= 6&& jack_seen){
 			Inv.Win();
 			Jack.lose();
-			System.out.printf("Though the score, Jack's seen\nHolmes wins\n");
+			//System.out.printf("Though the score, Jack's seen\nHolmes wins\n");
 			return true;
 		}
 		else if(gameover == 1 ){
 			Inv.Win();
 			Jack.lose();
-			System.out.printf("all are dead\nHolmes wins\n");
+			//System.out.printf("all are dead\nHolmes wins\n");
 			return true;
 		}
 		else if(score == 6){
 			Jack.Win();
 			Inv.lose();
-			System.out.printf("Jack's got 6 hourglasses\nJack wins\n");
+			//System.out.printf("Jack's got 6 hourglasses\nJack wins\n");
 			return true;
 		}
 		else if(round == 9){
